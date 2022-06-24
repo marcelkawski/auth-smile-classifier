@@ -10,7 +10,7 @@ def clean_name(name):
 
 
 def get_all_videos_names():
-    return [clean_name(f) for f in listdir(VIDEOS_DIR) if isfile(join(VIDEOS_DIR, f))]
+    return list(filter(None, [clean_name(f) for f in listdir(VIDEOS_DIR) if isfile(join(VIDEOS_DIR, f))]))
 
 
 AUTH_SMILE_ENC_DICT = {
