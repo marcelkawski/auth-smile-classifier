@@ -1,8 +1,11 @@
 import os
+import sys
 import pandas as pd
 import torch
 from torch.utils.data.dataset import Dataset
 from torchvision.io import read_video
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import config as conf
 

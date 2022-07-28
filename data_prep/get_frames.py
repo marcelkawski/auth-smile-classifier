@@ -1,11 +1,22 @@
 import os
+import sys
 import cv2
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from config import VIDEOS_DIR, FRAMES_DIR
-from data_prep.utils import get_all_videos_names
+from data_prep.utils import get_all_filenames
 
 if __name__ == '__main__':
-    videos_names = get_all_videos_names()
+    if os.path.exists(FRAMES_DIR) and os.listdir(FRAMES_DIR):  # Exists and is not empty.:
+        print('Videos frames directory is not empty so the program supposes that the faces have been already '
+              'extracted.\n')
+        sys.exit()
+
+    if not os.path.exists(FRAMES_DIR):
+        os.makedirs(FRAMES_DIR)
+
+    videos_names = get_all_filenames(VIDEOS_DIR)
     frames_sets_created = 0
 
     for video_name in videos_names:
@@ -39,7 +50,6 @@ if __name__ == '__main__':
         video.release()
         cv2.destroyAllWindows()
 
-    print('Done!')
+    print('Done!\n')
     print(f'Number of videos: {len(videos_names)}')
     print(f'Number of frames sets created: {frames_sets_created}')
-

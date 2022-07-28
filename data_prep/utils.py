@@ -1,16 +1,17 @@
+import os
+import sys
 from os import listdir
 from os.path import isfile, join
 
-from config import VIDEOS_DIR
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
-def clean_name(name):
-    if name[0:2] == '._':
-        return name[2:]
+def get_all_filenames(directory):
+    return list(filter(None, [f for f in listdir(directory) if isfile(join(directory, f)) and f[:2] != '._']))
 
 
-def get_all_videos_names():
-    return list(filter(None, [clean_name(f) for f in listdir(VIDEOS_DIR) if isfile(join(VIDEOS_DIR, f))]))
+def get_dir_content(directory):
+    return list(filter(None, [f for f in listdir(directory)]))
 
 
 AUTH_SMILE_ENC_DICT = {
