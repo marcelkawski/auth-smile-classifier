@@ -37,12 +37,19 @@ if __name__ == '__main__':
     num_frames, dirs_created, faces_extracted = 0, 0, 0
 
     videos_names = get_all_filenames(VIDEOS_DIR)
+    done_videos = get_dir_content(FACES_DIR)
+    todo_videos = [vn for vn in videos_names if vn not in done_videos]
 
-    for video_name in videos_names:
+    print('all videos: ', len(videos_names))
+    print('done videos: ', len(done_videos))
+    print('videos to do: ', len(todo_videos))
+
+    for video_name in todo_videos:
         print(f'**********************************************\n{video_name}\n')
 
         # create dir for the faces
         video_faces_dir = os.path.abspath(os.path.join(os.sep, FACES_DIR, video_name))
+
         if not os.path.exists(video_faces_dir):
             os.makedirs(video_faces_dir)
             dirs_created += 1
@@ -53,6 +60,7 @@ if __name__ == '__main__':
         num_frames += len(frames_names)
 
         os.chdir(video_faces_dir)
+        num_faces = 0
         for frame_name in frames_names:
             print(f'Extracting from {frame_name}...')
             frame_path = os.path.abspath(os.path.join(os.sep, frame_dir, frame_name))
@@ -61,10 +69,15 @@ if __name__ == '__main__':
             crop_faces(_faces, img, frame_name)
             faces_extracted += len(_faces)
 
+            num_faces += len(_faces)
+
+        print(f'\nNumber of frames: {len(frames_names)}\nNumber of faces: {num_faces}\nTo delete: '
+              f'{num_faces - len(frames_names)}\n')
+
     print('\nDone!\n')
     # Numbers should be equal in pairs.
-    print(f'Number of videos: {len(videos_names)}')
+    print(f'Number of videos: {len(todo_videos)}')
     print(f'Number of directories created: {dirs_created}\n')
     print(f'Number of frames: {num_frames}')
     print(f'Number of faces extracted: {faces_extracted}')
-    print(f'Number of faces to delete: {faces_extracted-num_frames}')
+    print(f'Number of faces to delete: {faces_extracted - num_frames}')
