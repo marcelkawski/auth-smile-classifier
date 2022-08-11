@@ -4,7 +4,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from data_prep.utils import get_all_filenames, get_dir_content
-from config import VIDEOS_DIR, FRAMES_DIR, FACES_DIR
+from config import FRAMES_DIR, FACES_DIR
 
 
 def test_faces_num():

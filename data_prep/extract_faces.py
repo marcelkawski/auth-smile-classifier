@@ -1,25 +1,58 @@
 import os
 import sys
 import cv2
+import dlib
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from config import VIDEOS_DIR, FRAMES_DIR, FACES_DIR, FACES_DET_OPENCV_FILEPATH
+from config import VIDEOS_DIR, FRAMES_DIR, FACES_DIR, FACES_DET_OPENCV_FILEPATH1, FACES_DET_OPENCV_FILEPATH2, \
+    NEW_FACES_DIR
 from data_prep.utils import get_all_filenames, get_dir_content
 
 
-def get_faces(image):
+def handle_arguments():
+    arguments = sys.argv
+    if len(arguments) != 2:
+        raise Exception('Invalid number of parameters. This script accepts only one parameter - algorithm number.')
+
+    arguments[1] = int(arguments[1])
+
+    if int(arguments[1]) not in [0, 1, 2]:
+        raise Exception('Invalid extracting faces algorithm number.\n'
+                        'Options to choose:\n'
+                        '0: OpenCV haar-cascade haarcascade_frontalface_alt.xml\n'
+                        '1: OpenCV haar-cascade haarcascade_frontalface_alt2.xml\n'
+                        '2: dlib.get_frontal_face_detector\n')
+
+    return arguments
+
+
+def get_faces(image, algorithm):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    face_cascade = cv2.CascadeClassifier(FACES_DET_OPENCV_FILEPATH)
-    faces = face_cascade.detectMultiScale(gray, 1.1, 4)
-    return faces
+    if algorithm == 0:
+        face_cascade = cv2.CascadeClassifier(FACES_DET_OPENCV_FILEPATH1)
+        faces = face_cascade.detectMultiScale(gray, 1.1, 4)
+        return faces
+    elif algorithm == 1:
+        face_cascade = cv2.CascadeClassifier(FACES_DET_OPENCV_FILEPATH2)
+        faces = face_cascade.detectMultiScale(gray, 1.1, 4)
+        return faces
+    elif algorithm == 2:
+        detector = dlib.get_frontal_face_detector()
+        faces = detector(gray)
+        return faces
 
 
-def crop_faces(faces, image, face_name):
+def crop_faces(faces, image, face_name, algorithm):
     if len(faces) == 1:
-        (x, y, w, h) = faces[0]
-        cropped_face = image[y:y + h, x:x + w]
-        cv2.imwrite(face_name, cropped_face)
+        if algorithm == 2:
+            face = faces[0]
+            cropped_face = image[face.top():face.bottom(), face.left():face.right()]
+            cv2.imwrite(face_name, cropped_face)
+        else:
+            (x, y, w, h) = faces[0]
+            cropped_face = image[y:y + h, x:x + w]
+            cv2.imwrite(face_name, cropped_face)
     else:
         for num, (x, y, w, h) in enumerate(faces):
             cropped_face = image[y:y + h, x:x + w]
@@ -27,6 +60,8 @@ def crop_faces(faces, image, face_name):
 
 
 if __name__ == '__main__':
+    _, alg_num = handle_arguments()
+
     if os.path.exists(FACES_DIR) and os.listdir(FACES_DIR):  # Exists and is not empty.
         print('Faces directory is not empty so the program supposes that the faces have been already extracted.\n')
         sys.exit()
@@ -44,11 +79,14 @@ if __name__ == '__main__':
     print('done videos: ', len(done_videos))
     print('videos to do: ', len(todo_videos))
 
+    for tdv in enumerate(todo_videos):
+        print(tdv)
+
     for video_name in todo_videos:
         print(f'**********************************************\n{video_name}\n')
 
         # create dir for the faces
-        video_faces_dir = os.path.abspath(os.path.join(os.sep, FACES_DIR, video_name))
+        video_faces_dir = os.path.abspath(os.path.join(os.sep, NEW_FACES_DIR, video_name))
 
         if not os.path.exists(video_faces_dir):
             os.makedirs(video_faces_dir)
@@ -65,8 +103,8 @@ if __name__ == '__main__':
             print(f'Extracting from {frame_name}...')
             frame_path = os.path.abspath(os.path.join(os.sep, frame_dir, frame_name))
             img = cv2.imread(frame_path)
-            _faces = get_faces(img)
-            crop_faces(_faces, img, frame_name)
+            _faces = get_faces(img, alg_num)
+            crop_faces(_faces, img, frame_name, alg_num)
             faces_extracted += len(_faces)
 
             num_faces += len(_faces)

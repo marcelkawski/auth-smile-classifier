@@ -5,7 +5,7 @@ import re
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from data_prep.utils import get_all_filenames, get_dir_content
-from config import VIDEOS_DIR, FRAMES_DIR, FACES_DIR
+from config import FACES_DIR
 
 
 def get_frame_num(name):
@@ -21,4 +21,3 @@ def test_consecutive_faces_frames_nums():
         for idx, name in enumerate(faces_files):
             frame_num = get_frame_num(name)
             assert frame_num == idx
-
