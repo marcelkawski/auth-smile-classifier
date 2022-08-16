@@ -5,15 +5,15 @@ import dlib
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from config import VIDEOS_DIR, FRAMES_DIR, FACES_DIR, FACES_DET_OPENCV_FILEPATH1, FACES_DET_OPENCV_FILEPATH2, \
+from config import VIDEOS_DIR, FRAMES_DIR, FACES_DIR, FACES_DET_OPENCV_MODEL1_FP, FACES_DET_OPENCV_MODEL2_FP, \
     NEW_FACES_DIR
-from data_prep.utils import get_all_filenames, get_dir_content
+from data_prep.utils import get_all_filenames, get_all_subdirs
 
 
 def handle_arguments():
     arguments = sys.argv
     if len(arguments) != 2:
-        raise Exception('Invalid number of parameters. This script accepts only one parameter - algorithm number.')
+        raise Exception('Invalid number of parameters. This script accepts only ONE parameter - algorithm number.')
 
     arguments[1] = int(arguments[1])
 
@@ -30,11 +30,11 @@ def handle_arguments():
 def get_faces(image, algorithm):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     if algorithm == 0:
-        face_cascade = cv2.CascadeClassifier(FACES_DET_OPENCV_FILEPATH1)
+        face_cascade = cv2.CascadeClassifier(FACES_DET_OPENCV_MODEL1_FP)
         faces = face_cascade.detectMultiScale(gray, 1.1, 4)
         return faces
     elif algorithm == 1:
-        face_cascade = cv2.CascadeClassifier(FACES_DET_OPENCV_FILEPATH2)
+        face_cascade = cv2.CascadeClassifier(FACES_DET_OPENCV_MODEL2_FP)
         faces = face_cascade.detectMultiScale(gray, 1.1, 4)
         return faces
     elif algorithm == 2:
@@ -72,7 +72,7 @@ if __name__ == '__main__':
     num_frames, dirs_created, faces_extracted = 0, 0, 0
 
     videos_names = get_all_filenames(VIDEOS_DIR)
-    done_videos = get_dir_content(FACES_DIR)
+    done_videos = get_all_subdirs(FACES_DIR)
     todo_videos = [vn for vn in videos_names if vn not in done_videos]
 
     print('all videos: ', len(videos_names))

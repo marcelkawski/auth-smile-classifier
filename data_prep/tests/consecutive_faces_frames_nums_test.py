@@ -4,7 +4,7 @@ import re
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from data_prep.utils import get_all_filenames, get_dir_content
+from data_prep.utils import get_all_filenames, get_all_subdirs
 from config import FACES_DIR
 
 
@@ -13,7 +13,7 @@ def get_frame_num(name):
 
 
 def test_consecutive_faces_frames_nums():
-    faces_dirs = get_dir_content(FACES_DIR)
+    faces_dirs = get_all_subdirs(FACES_DIR)
     for face_dirname in faces_dirs:
         face_dir = os.path.abspath(os.path.join(os.sep, FACES_DIR, face_dirname))
         # sorted by frame number

@@ -5,7 +5,7 @@ import re
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config import FACES_DIR
-from data_prep.utils import get_dir_content, get_all_filenames
+from data_prep.utils import get_all_subdirs, get_all_filenames
 
 
 def rename_file(path, old_name, new_name):
@@ -18,7 +18,7 @@ if __name__ == '__main__':
         print('Faces directory does not exist or is empty so there is nothing to clean.\n')
         sys.exit()
 
-    faces_dirs = get_dir_content(FACES_DIR)
+    faces_dirs = get_all_subdirs(FACES_DIR)
 
     for face_dirname in faces_dirs:
         face_dir = os.path.abspath(os.path.join(os.sep, FACES_DIR, face_dirname))

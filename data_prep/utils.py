@@ -10,7 +10,7 @@ def get_all_filenames(directory):
     return list(filter(None, [f for f in listdir(directory) if isfile(join(directory, f)) and f[:2] != '._']))
 
 
-def get_dir_content(directory):
+def get_all_subdirs(directory):
     return list(filter(None, [f for f in listdir(directory)]))
 
 
