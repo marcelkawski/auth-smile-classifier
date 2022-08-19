@@ -1,13 +1,14 @@
-import os
 import sys
+import os
 import cv2
 import dlib
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from config import VIDEOS_DIR, FRAMES_DIR, FACES_DIR, FACES_DET_OPENCV_MODEL1_FP, FACES_DET_OPENCV_MODEL2_FP, \
-    NEW_FACES_DIR
-from data_prep.utils import get_all_filenames, get_all_subdirs
+from config import FRAMES_DIR, FACES_DIR, NEW_FACES_DIR, FACES_FEATURES_DET_FP, FACES_DET_OPENCV_MODEL1_FP, \
+    FACES_DET_OPENCV_MODEL2_FP
+from data_prep.utils import get_all_subdirs, get_all_filenames
+from data_prep.face_aligner import FaceAligner
 
 
 def handle_arguments():
@@ -69,23 +70,28 @@ if __name__ == '__main__':
     if not os.path.exists(NEW_FACES_DIR):
         os.makedirs(NEW_FACES_DIR)
 
-    videos_names = get_all_filenames(VIDEOS_DIR)
+    videos_names = get_all_subdirs(FRAMES_DIR)
     done_videos_names = get_all_subdirs(FACES_DIR)
-    todo_videos_names = [vn for vn in videos_names if vn not in done_videos_names]
+    todo_videos_names = [vn for vn in videos_names if vn not in done_videos_names][:2]
 
     print('all videos: ', len(videos_names))
     print('done videos: ', len(done_videos_names))
     print('videos to do: ', len(todo_videos_names))
-    
+
     if todo_videos_names:
+        _detector = dlib.get_frontal_face_detector()  # to detect faces
+        predictor = dlib.shape_predictor(FACES_FEATURES_DET_FP)  # to detect features to align faces
+        fa = FaceAligner(predictor)
+
         num_frames, dirs_created, _faces_extracted = 0, 0, 0
 
         for video_name in todo_videos_names:
             # create dir for the faces
             faces_dir = os.path.abspath(os.path.join(os.sep, NEW_FACES_DIR, video_name))
-            frame_dir = os.path.abspath(os.path.join(os.sep, FRAMES_DIR, video_name))
-            frames_names = get_all_filenames(frame_dir)
-    
+            frames_dir = os.path.abspath(os.path.join(os.sep, FRAMES_DIR, video_name))
+            frames_names = get_all_filenames(frames_dir)
+            video_faces_extracted = 0
+
             if not os.path.exists(faces_dir):
                 print(f'**********************************************\n{video_name}\n')
 
@@ -96,15 +102,25 @@ if __name__ == '__main__':
                 os.chdir(faces_dir)
 
                 for frame_name in frames_names:
-                    frame_path = os.path.abspath(os.path.join(os.sep, frame_dir, frame_name))
+                    frame_path = os.path.abspath(os.path.join(os.sep, frames_dir, frame_name))
 
                     img = cv2.imread(frame_path)
-                    _faces = get_faces(img, alg_num)
-                    _faces_extracted += crop_faces(_faces, img, frame_name, alg_num)
-    
-            print(f'Number of frames: {len(frames_names)}\nNumber of faces extracted: {_faces_extracted}\nTo delete: '
-                  f'{_faces_extracted - len(frames_names)}')
-    
+                    _gray = cv2.cvtColor(src=img, code=cv2.COLOR_BGR2GRAY)
+                    _faces = _detector(_gray)
+
+                    for _num, _face in enumerate(_faces):
+                        aligned_face = fa.align(img, _gray, _face)
+
+                        if _num == 0:
+                            cv2.imwrite(f'{frame_name}', aligned_face)
+                        else:
+                            cv2.imwrite(f'{frame_name}_face{str(_num)}.jpg', aligned_face)
+                        video_faces_extracted += 1
+                        _faces_extracted += 1
+
+            print(f'Number of frames: {len(frames_names)}\nNumber of faces extracted: {video_faces_extracted}\nTo '
+                  f'delete: {video_faces_extracted - len(frames_names)}')
+
         print('**********************************************\nDone!\n')
         # Numbers should be equal in pairs.
         print(f'Number of videos: {len(todo_videos_names)}')
@@ -112,6 +128,6 @@ if __name__ == '__main__':
         print(f'Number of frames: {num_frames}')
         print(f'Number of faces extracted: {_faces_extracted}')
         print(f'Number of faces to delete: {_faces_extracted - num_frames}')
-        
+
     else:
         print('Nothing to extract...')
