@@ -1,6 +1,7 @@
 import os
 import sys
 import numpy as np
+import re
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -36,3 +37,11 @@ def landmarks_to_np(shape, dtype='int'):
     for i in range(0, 68):
         coords[i] = (shape.part(i).x, shape.part(i).y)
     return coords
+
+
+def get_frame_num(name):
+    return int(re.search(r'frame(\d+)', name).group(1))
+
+
+def get_filenames_sorted_by_frame_num(directory):
+    return sorted(get_all_filenames(directory), key=lambda n: get_frame_num(n))

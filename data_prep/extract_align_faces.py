@@ -112,9 +112,10 @@ if __name__ == '__main__':
         print('**********************************************\nDone!\n')
         # Numbers should be equal in pairs.
         print(f'Number of videos: {len(todo_videos_names)}')
-        print(f'Number of directories created: {dirs_created}\n')
+        print(f'Number of created directories: {dirs_created}\n')
+
         print(f'Number of frames: {num_frames}')
-        print(f'Number of faces extracted: {_faces_extracted}')
+        print(f'Number of extracted faces: {_faces_extracted}')
         print(f'Number of faces to delete: {_faces_extracted - num_frames}')
 
     else:
