@@ -26,3 +26,5 @@ if __name__ == '__main__':
         for f in faces_files_to_clean:
             _, ext = os.path.splitext(f)
             rename_file(face_dir, f, re.sub(rf'_face\d{ext}', '', f))
+
+    print('\nDone!')

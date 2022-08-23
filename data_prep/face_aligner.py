@@ -2,6 +2,7 @@ import sys
 import os
 import numpy as np
 import cv2
+import dlib
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -21,6 +22,12 @@ class FaceAligner:
             self.desired_face_height = self.desired_face_width
 
     def align(self, image, gray, rect):
+        if isinstance(rect, np.ndarray) and len(rect) == 4:  # data format for first 2 algorithms extracting faces
+            x = rect[0]
+            y = rect[1]
+            w = rect[2]
+            h = rect[3]
+            rect = dlib.rectangle(x, y, x + w, y + h)
         shape = self.predictor(gray, rect)
         shape = landmarks_to_np(shape)
         (left_eye_beg, left_eye_end) = FACIAL_LANDMARKS_IDXS['left_eye']

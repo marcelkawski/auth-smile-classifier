@@ -28,39 +28,28 @@ def handle_arguments():
     return arguments
 
 
-def get_faces(image, algorithm):
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+def get_faces(gray, algorithm):
+    faces = None
     if algorithm == 0:
         face_cascade = cv2.CascadeClassifier(FACES_DET_OPENCV_MODEL1_FP)
         faces = face_cascade.detectMultiScale(gray, 1.1, 4)
-        return faces
     elif algorithm == 1:
         face_cascade = cv2.CascadeClassifier(FACES_DET_OPENCV_MODEL2_FP)
         faces = face_cascade.detectMultiScale(gray, 1.1, 4)
-        return faces
     elif algorithm == 2:
         detector = dlib.get_frontal_face_detector()
         faces = detector(gray)
-        return faces
+    return faces
 
 
-def crop_faces(faces, image, face_name, algorithm):
+def crop_faces(faces, face_name):
     faces_extracted = 0
-    if len(faces) == 1:
-        if algorithm == 2:
-            face = faces[0]
-            cropped_face = image[face.top():face.bottom(), face.left():face.right()]
-            cv2.imwrite(face_name, cropped_face)
+    for num, face in enumerate(faces):
+        if num != 0:
+            cv2.imwrite(f'{face_name}_face{str(num)}.jpg', face)
         else:
-            (x, y, w, h) = faces[0]
-            cropped_face = image[y:y + h, x:x + w]
-            cv2.imwrite(face_name, cropped_face)
+            cv2.imwrite(face_name, face)
         faces_extracted += 1
-    else:
-        for num, (x, y, w, h) in enumerate(faces):
-            cropped_face = image[y:y + h, x:x + w]
-            cv2.imwrite(f'{face_name}_face{str(num)}.jpg', cropped_face)
-            faces_extracted += 1
     return faces_extracted
 
 
@@ -72,7 +61,7 @@ if __name__ == '__main__':
 
     videos_names = get_all_subdirs(FRAMES_DIR)
     done_videos_names = get_all_subdirs(FACES_DIR)
-    todo_videos_names = [vn for vn in videos_names if vn not in done_videos_names][:2]
+    todo_videos_names = [vn for vn in videos_names if vn not in done_videos_names]
 
     print('all videos: ', len(videos_names))
     print('done videos: ', len(done_videos_names))
@@ -105,18 +94,17 @@ if __name__ == '__main__':
                     frame_path = os.path.abspath(os.path.join(os.sep, frames_dir, frame_name))
 
                     img = cv2.imread(frame_path)
-                    _gray = cv2.cvtColor(src=img, code=cv2.COLOR_BGR2GRAY)
-                    _faces = _detector(_gray)
+                    _gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                    _faces = get_faces(img, alg_num)
 
-                    for _num, _face in enumerate(_faces):
-                        aligned_face = fa.align(img, _gray, _face)
+                    if _faces is not None:
+                        # align and crop faces
+                        aligned_faces = [fa.align(img, _gray, _face) for _face in _faces]
+                        # save cropped faces
+                        fe = crop_faces(aligned_faces, frame_name)
 
-                        if _num == 0:
-                            cv2.imwrite(f'{frame_name}', aligned_face)
-                        else:
-                            cv2.imwrite(f'{frame_name}_face{str(_num)}.jpg', aligned_face)
-                        video_faces_extracted += 1
-                        _faces_extracted += 1
+                        video_faces_extracted += fe
+                        _faces_extracted += fe
 
             print(f'Number of frames: {len(frames_names)}\nNumber of faces extracted: {video_faces_extracted}\nTo '
                   f'delete: {video_faces_extracted - len(frames_names)}')
