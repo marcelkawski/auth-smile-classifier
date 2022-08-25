@@ -9,8 +9,6 @@ VIDEOS_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'videos'))
 FRAMES_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'frames'))
 FACES_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'faces'))
 NEW_FACES_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'new_faces'))
-FACES_FEATURES_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'faces_features'))
-FACES_FEATURES_DATA_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'faces_features_data'))
 
 # -----MODELS-----
 # faces detection
@@ -24,8 +22,13 @@ FACES_FEATURES_DET_FP = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data_pre
                                                      'shape_predictor_68_face_landmarks.dat'))
 
 # -----EXTRACTING AND NORMALIZING FACES-----
-DESIRED_FACE_WIDTH = 256
+DESIRED_FACE_WIDTH = 512
 DESIRED_LEFT_EYE_POS = 0.35
+
+FACES_FEATURES_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data',
+                                                  f'faces_features{DESIRED_FACE_WIDTH}'))
+FACES_FEATURES_DATA_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data',
+                                                       f'faces_features_data{DESIRED_FACE_WIDTH}'))
 
 # -----FACES FEATURES-----
 NUM_FACES_FEATURES = 68
