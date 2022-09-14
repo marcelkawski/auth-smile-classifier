@@ -42,8 +42,8 @@ class FaceAligner:
         dX = right_eye_center[0] - left_eye_center[0]
         angle = np.degrees(np.arctan2(dY, dX)) - 180
 
-        desired_right_eye_x = 1.0 - self.desired_left_eye_pos[0]
         dist = np.sqrt((dX ** 2) + (dY ** 2))
+        desired_right_eye_x = 1.0 - self.desired_left_eye_pos[0]
         desired_dist = desired_right_eye_x - self.desired_left_eye_pos[0]
         desired_dist *= self.desired_face_width
         scale = desired_dist / dist

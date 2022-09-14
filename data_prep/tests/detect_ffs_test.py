@@ -5,7 +5,7 @@ import pandas as pd
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from data_prep.utils import get_all_filenames, get_all_subdirs, get_frame_num, get_filenames_sorted_by_frame_num
-from config import FACES_DIR, FACES_FEATURES_DIR_256, FACES_FEATURES_DATA_DIR_256
+from config import FACES_DIR, FACES_FEATURES_DIR, FACES_FEATURES_DATA_DIR
 
 
 def test_consecutive_frames_in_ffs_data_files():
