@@ -37,7 +37,7 @@ if __name__ == '__main__':
 
     videos_names = get_all_subdirs(FACES_DIR)
     done_videos_names = get_all_subdirs(FACES_FEATURES_DIR)
-    todo_videos_names = [vn for vn in videos_names if vn not in done_videos_names][:400]
+    todo_videos_names = [vn for vn in videos_names if vn not in done_videos_names]
 
     print('all videos: ', len(videos_names))
     print('done videos: ', len(done_videos_names))
