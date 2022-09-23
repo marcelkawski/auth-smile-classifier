@@ -4,7 +4,7 @@ import cv2
 import dlib
 import csv
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from config import FACES_FEATURES_DET_FP, FACES_DIR, NUM_FACES_FEATURES, FACES_FEATURES_DIR, FACES_FEATURES_DATA_DIR
 from data_prep.utils import get_all_subdirs, get_frame_num, get_filenames_sorted_by_frame_num
