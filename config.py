@@ -13,7 +13,7 @@ FACES_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'faces'))
 FACES_SAME_LEN_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'faces_same_len'))
 NEW_FACES_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'new_faces'))
 SMILES_DATA_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data_prep', 'smiles_data'))
-SMILES_DATA_FILE_PATH = os.path.abspath(os.path.join(os.sep, SMILES_DATA_DIR, 'smiles_data-20220923-123141.json'))
+SMILES_DATA_FILE_PATH = os.path.abspath(os.path.join(os.sep, SMILES_DATA_DIR, 'smiles_data-20221005-135843.json'))
 
 # -----MODELS-----
 # faces detection
@@ -41,5 +41,9 @@ NUM_FACES_FEATURES = 68
 LIPS_CORNER1_IDX = 48
 LIPS_CORNER2_IDX = 54
 
-BEG_SMILE_THRESHOLD = 1.8
-END_SMILE_THRESHOLD = 0.01
+BEG_SMILE_THRESHOLD = 1
+END_SMILE_THRESHOLD = 0.05
+NUM_FRAMES_RISE_SMILE_BEG = 20
+MIN_DIFF_IN_RISE_SMILE_BEG = 0.01
+SMILE_DURATION_MIN_RATIO = 0.48  # minimal <number_of_smile_frames>/<number_of_all_frames> ratio - If less than that
+# - take from the beginning till the end
