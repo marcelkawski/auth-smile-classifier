@@ -1,7 +1,10 @@
 {
-    "smile_thresholds": {
-        "beg": 1,
-        "end": 0.05
+    "smile_config": {
+        "BEG_SMILE_THRESHOLD": 1,
+        "END_SMILE_THRESHOLD": 0.05,
+        "NUM_FRAMES_RISE_SMILE_BEG": 20,
+        "MIN_DIFF_IN_RISE_SMILE_BEG": 0.01,
+        "SMILE_DURATION_MIN_RATIO": 0.48
     },
     "frames": [
         {

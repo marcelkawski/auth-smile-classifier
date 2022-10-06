@@ -6,14 +6,13 @@ import dlib
 import numpy as np
 import matplotlib.pyplot as plt
 import json
-import time
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from config import FACES_FEATURES_DET_FP, FACES_DIR, LIPS_CORNER1_IDX, LIPS_CORNER2_IDX, BEG_SMILE_THRESHOLD, \
     END_SMILE_THRESHOLD, SMILES_DATA_DIR, SMILES_DATA_FILE_PATH, NUM_FRAMES_RISE_SMILE_BEG, \
     MIN_DIFF_IN_RISE_SMILE_BEG, SMILE_DURATION_MIN_RATIO
-from data_prep.utils import get_all_subdirs, get_frame_num, get_filenames_sorted_by_frame_num
+from data_prep.utils import get_all_subdirs, get_frame_num, get_filenames_sorted_by_frame_num, save_dict_to_json_file
 
 
 def show_smile_plot(data):
@@ -190,18 +189,17 @@ def save_smiles_data(show_plot=False, print_values=False, print_video_summary=Fa
                 show_smile_plot(diffs_in_time)
 
         smiles_data = {
-            'smile_thresholds': {
-                'beg': BEG_SMILE_THRESHOLD,
-                'end': END_SMILE_THRESHOLD
+            "smile_config": {
+                "BEG_SMILE_THRESHOLD": BEG_SMILE_THRESHOLD,
+                "END_SMILE_THRESHOLD": END_SMILE_THRESHOLD,
+                "NUM_FRAMES_RISE_SMILE_BEG": NUM_FRAMES_RISE_SMILE_BEG,
+                "MIN_DIFF_IN_RISE_SMILE_BEG": MIN_DIFF_IN_RISE_SMILE_BEG,
+                "SMILE_DURATION_MIN_RATIO": SMILE_DURATION_MIN_RATIO
             },
             'frames': smiles_frames
         }
 
-        time_str = time.strftime("%Y%m%d-%H%M%S")
-
-        with open(os.path.abspath(os.path.join(os.sep, SMILES_DATA_DIR, f'smiles_data-{time_str}.json')), 'w') as f:
-            json.dump(smiles_data, f, indent=4)
-            print('\nSmiles data successfully saved into the json file.\n')
+        save_dict_to_json_file(SMILES_DATA_DIR, 'smiles_data', smiles_data)
 
     else:
         print('No faces to detect face features...')

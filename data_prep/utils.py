@@ -2,8 +2,13 @@ import os
 import sys
 import numpy as np
 import re
+import json
+import time
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from config import BEG_SMILE_THRESHOLD, END_SMILE_THRESHOLD, NUM_FRAMES_RISE_SMILE_BEG, MIN_DIFF_IN_RISE_SMILE_BEG, \
+    SMILE_DURATION_MIN_RATIO
 
 
 AUTH_SMILE_ENC_DICT = {
@@ -45,3 +50,10 @@ def get_frame_num(name):
 
 def get_filenames_sorted_by_frame_num(directory):
     return sorted(get_all_filenames(directory), key=lambda n: get_frame_num(n))
+
+
+def save_dict_to_json_file(path, title, data):
+    time_str = time.strftime("%Y%m%d-%H%M%S")
+    with open(os.path.abspath(os.path.join(os.sep, path, f'{title}-{time_str}.json')), 'w') as f:
+        json.dump(data, f, indent=4)
+        print('\nData successfully saved into the json file.\n')
