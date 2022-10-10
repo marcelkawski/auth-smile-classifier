@@ -13,7 +13,9 @@ FACES_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'faces'))
 FACES_SAME_LEN_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'faces_same_len'))
 NEW_FACES_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'new_faces'))
 SMILES_DATA_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data_prep', 'smiles_data'))
-SMILES_DATA_FILE_PATH = os.path.abspath(os.path.join(os.sep, SMILES_DATA_DIR, 'smiles_data-20221005-135843.json'))
+SMILES_DATA_FILE_PATH = os.path.abspath(os.path.join(os.sep, SMILES_DATA_DIR, 'smiles_data-20221007-125320.json'))
+COMPLETE_SMILES_DATA_FILE_PATH = os.path.abspath(os.path.join(os.sep, SMILES_DATA_DIR,
+                                                              'complete_smiles_data-20221008-141009.json'))
 
 # -----MODELS-----
 # faces detection
@@ -47,3 +49,4 @@ NUM_FRAMES_RISE_SMILE_BEG = 20
 MIN_DIFF_IN_RISE_SMILE_BEG = 0.01
 SMILE_DURATION_MIN_RATIO = 0.48  # minimal <number_of_smile_frames>/<number_of_all_frames> ratio - If less than that
 # - take from the beginning till the end
+CURRENT_MIN_NUM_SMILE_FRAMES = 39  # number of frames of the shortest smile

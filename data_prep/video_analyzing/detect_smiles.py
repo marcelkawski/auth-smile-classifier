@@ -103,6 +103,7 @@ def save_smiles_data(show_plot=False, print_values=False, print_video_summary=Fa
             # finding beginning and end of the smile
             beg_found, end_found = False, False
             smile_beg_frame, smile_end_frame, num_smiles_frames = None, None, None
+            num_frames = len(faces_names)
 
             try:
                 for i in range(1, len(diffs_in_time)-1):  # From 1 because first value is always None.
@@ -159,10 +160,9 @@ def save_smiles_data(show_plot=False, print_values=False, print_video_summary=Fa
                 print(f'\nError:\tNo smile beginning found in "{video_name}."\n')
                 smile_beg_frame = 0
             if end_found is False:
-                smile_end_frame = len(faces_names)  # last frame of the video
+                smile_end_frame = num_frames - 1  # last frame of the video
 
             num_smiles_frames = smile_end_frame - smile_beg_frame + 1
-            num_frames = len(faces_names)
 
             if num_smiles_frames / num_frames < SMILE_DURATION_MIN_RATIO:  # SMILE_DURATION_MIN_RATIO - minimal
                 # <number_of_smile_frames>/<number_of_all_frames> ratio - If less than that take from the beginning
@@ -206,4 +206,4 @@ def save_smiles_data(show_plot=False, print_values=False, print_video_summary=Fa
 
 
 if __name__ == '__main__':
-    save_smiles_data(print_video_summary=True, sorted_by_num_smiles_frames=True, show_plot=True, print_values=True)
+    save_smiles_data()
