@@ -7,9 +7,6 @@ import time
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from config import BEG_SMILE_THRESHOLD, END_SMILE_THRESHOLD, NUM_FRAMES_RISE_SMILE_BEG, MIN_DIFF_IN_RISE_SMILE_BEG, \
-    SMILE_DURATION_MIN_RATIO
-
 
 AUTH_SMILE_ENC_DICT = {
     'deliberate': 0,
