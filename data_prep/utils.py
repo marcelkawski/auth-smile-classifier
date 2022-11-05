@@ -3,9 +3,10 @@ import sys
 import numpy as np
 import re
 import json
-import time
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from utils import get_current_time_str
 
 
 AUTH_SMILE_ENC_DICT = {
@@ -50,7 +51,7 @@ def get_filenames_sorted_by_frame_num(directory):
 
 
 def save_dict_to_json_file(path, title, data):
-    time_str = time.strftime("%Y%m%d-%H%M%S")
+    time_str = get_current_time_str()
     with open(os.path.abspath(os.path.join(os.sep, path, f'{title}-{time_str}.json')), 'w') as f:
         json.dump(data, f, indent=4)
         print('\nData successfully saved into the json file.\n')

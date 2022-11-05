@@ -1,5 +1,5 @@
-import numpy as np
 from dotmap import DotMap
+
 
 nns_config = DotMap({
     'test_size': 0.2,
@@ -7,17 +7,28 @@ nns_config = DotMap({
     'num_classes': 2
 })
 
-imgs_transforms_config = DotMap({
-    'means': np.array([0.485, 0.456, 0.406]),
-    'stds': np.array([0.229, 0.224, 0.225])
+# CNN3D_imgs_transforms_config = DotMap({
+#     'means': [0.43216, 0.394666, 0.37645],
+#     'stds': [0.22803, 0.22145, 0.216989],
+#     'h': 112,
+#     'w': 112
+# })
+
+RNN_imgs_transforms_config = DotMap({
+    'means': [0.485, 0.456, 0.406],
+    'stds': [0.229, 0.224, 0.225],
+    'h': 224,
+    'w': 224
 })
 
-video_CNN1_config = DotMap({
-    'num_epochs': 35,
-    'num_classes': 2,
-    'batch_size': 25,
-    'learning_rate': 0.001,
-    'kernel_size': 3
+RNN_config = DotMap({
+    'dropout_p': 0.1,
+    'rnn_num_layers': 1,
+    'rnn_hidden_size': 100,
+    'batch_size': 1,  # TODO: Pokombinowac z batch_size
+    'learning_rate': 1e-4,
+    'num_epochs': 20,
 })
+
 
 

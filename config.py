@@ -16,6 +16,8 @@ SMILES_DATA_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data_prep', 's
 SMILES_DATA_FILE_PATH = os.path.abspath(os.path.join(os.sep, SMILES_DATA_DIR, 'smiles_data-20221007-125320.json'))
 COMPLETE_SMILES_DATA_FILE_PATH = os.path.abspath(os.path.join(os.sep, SMILES_DATA_DIR,
                                                               'complete_smiles_data-20221008-141009.json'))
+NNS_WEIGHTS_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'models', 'nns', 'weights'))
+NNS_PLOTS_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'models', 'nns', 'plots'))
 
 # -----MODELS-----
 # faces detection

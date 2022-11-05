@@ -6,13 +6,14 @@ from torch.utils.data import Dataset
 from torchvision import transforms
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
-import matplotlib.image as img
+from torchvision.transforms.functional import to_pil_image
+from PIL import Image
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from config import VIDEOS_DATA_FILEPATH, FACES_SAME_LEN_DIR
 from data_prep.utils import get_filenames_sorted_by_frame_num
-from models._config import imgs_transforms_config as itc
+from models._config import RNN_imgs_transforms_config as rnn_itc
 from models._config import nns_config as nc
 
 
@@ -34,7 +35,7 @@ class VideosDataset(Dataset):
         frames = []
         for frame_name in frames_names:
             frame_path = os.path.abspath(os.path.join(os.sep, frames_dir_path, frame_name))
-            frame = img.imread(frame_path)
+            frame = Image.open(frame_path)
             if self.transform is not None:
                 frame = self.transform(frame)
             frames.append(frame)
@@ -65,23 +66,39 @@ def print_data_size(all_data, train_data, val_data, test_data):
           f'test data: {test_data_len} ({round(test_data_len / all_data_len * 100, 1)} %)\n')
 
 
+def denormalize(x_, means, stds):
+    x = x_.clone()
+    for i in range(3):
+        x[i] = x[i]*stds[i]+means[i]
+    x = to_pil_image(x)
+    return x
+
+
 def prepare_datasets():
     _data = pd.read_csv(VIDEOS_DATA_FILEPATH, delimiter=';')
 
     # vd = VideosDataset(data=_data)
     # vd.show_data_classes_sizes()
 
-    train_transform = transforms.Compose([transforms.ToPILImage(),
-                                          transforms.ToTensor(),
-                                          transforms.Normalize(itc.means, itc.stds)])
+    train_transform = transforms.Compose([
+        transforms.Resize((rnn_itc.h, rnn_itc.w)),
+        transforms.RandomHorizontalFlip(p=0.5),
+        transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),
+        transforms.ToTensor(),
+        transforms.Normalize(rnn_itc.means, rnn_itc.stds),
+    ])
 
-    test_transform = transforms.Compose([transforms.ToPILImage(),
-                                         transforms.ToTensor(),
-                                         transforms.Normalize(itc.means, itc.stds)])
+    test_transform = transforms.Compose([
+        transforms.Resize((rnn_itc.h, rnn_itc.w)),
+        transforms.ToTensor(),
+        transforms.Normalize(rnn_itc.means, rnn_itc.stds),
+    ])
 
-    val_transform = transforms.Compose([transforms.ToPILImage(),
-                                        transforms.ToTensor(),
-                                        transforms.Normalize(itc.means, itc.stds)])
+    val_transform = transforms.Compose([
+        transforms.Resize((rnn_itc.h, rnn_itc.w)),
+        transforms.ToTensor(),
+        transforms.Normalize(rnn_itc.means, rnn_itc.stds),
+    ])
 
     _train_data, _test_data = train_test_split(_data, test_size=nc.test_size)
     _train_data, _val_data = train_test_split(_train_data, test_size=nc.val_size, random_state=1)
