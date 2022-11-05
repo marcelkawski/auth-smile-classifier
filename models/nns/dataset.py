@@ -13,7 +13,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 
 from config import VIDEOS_DATA_FILEPATH, FACES_SAME_LEN_DIR
 from data_prep.utils import get_filenames_sorted_by_frame_num
-from models._config import RNN_imgs_transforms_config as rnn_itc
+from models._config import CNNLSTM_imgs_transforms_config as cnn_lstm_itc
 from models._config import nns_config as nc
 
 
@@ -81,23 +81,23 @@ def prepare_datasets():
     # vd.show_data_classes_sizes()
 
     train_transform = transforms.Compose([
-        transforms.Resize((rnn_itc.h, rnn_itc.w)),
+        transforms.Resize((cnn_lstm_itc.h, cnn_lstm_itc.w)),
         transforms.RandomHorizontalFlip(p=0.5),
         transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),
         transforms.ToTensor(),
-        transforms.Normalize(rnn_itc.means, rnn_itc.stds),
+        transforms.Normalize(cnn_lstm_itc.means, cnn_lstm_itc.stds),
     ])
 
     test_transform = transforms.Compose([
-        transforms.Resize((rnn_itc.h, rnn_itc.w)),
+        transforms.Resize((cnn_lstm_itc.h, cnn_lstm_itc.w)),
         transforms.ToTensor(),
-        transforms.Normalize(rnn_itc.means, rnn_itc.stds),
+        transforms.Normalize(cnn_lstm_itc.means, cnn_lstm_itc.stds),
     ])
 
     val_transform = transforms.Compose([
-        transforms.Resize((rnn_itc.h, rnn_itc.w)),
+        transforms.Resize((cnn_lstm_itc.h, cnn_lstm_itc.w)),
         transforms.ToTensor(),
-        transforms.Normalize(rnn_itc.means, rnn_itc.stds),
+        transforms.Normalize(cnn_lstm_itc.means, cnn_lstm_itc.stds),
     ])
 
     _train_data, _test_data = train_test_split(_data, test_size=nc.test_size)

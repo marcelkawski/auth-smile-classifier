@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from models._config import RNN_config as rnn_conf
+from models._config import CNNLSTM_config as cnn_lstm_conf
 from models.nns.video_cnn_lstm import VideoCNNLSTM
 from models.nns.dataset import prepare_datasets
 from config import NNS_WEIGHTS_DIR, NNS_PLOTS_DIR
@@ -53,21 +53,21 @@ def train():
     if model == 0:
         model_name = 'CNN+LSTM_NN'
 
-        train_loader = DataLoader(dataset=train_data, batch_size=rnn_conf.batch_size, shuffle=True,
+        train_loader = DataLoader(dataset=train_data, batch_size=cnn_lstm_conf.batch_size, shuffle=True,
                                   collate_fn=collate_fn_cnn_lstm)
-        val_loader = DataLoader(dataset=val_data, batch_size=rnn_conf.batch_size, shuffle=False,
+        val_loader = DataLoader(dataset=val_data, batch_size=cnn_lstm_conf.batch_size, shuffle=False,
                                 collate_fn=collate_fn_cnn_lstm)
-        test_loader = DataLoader(dataset=test_data, batch_size=rnn_conf.batch_size, shuffle=False,
+        test_loader = DataLoader(dataset=test_data, batch_size=cnn_lstm_conf.batch_size, shuffle=False,
                                  collate_fn=collate_fn_cnn_lstm)
 
         model = VideoCNNLSTM().to(device)
         criterion = nn.CrossEntropyLoss()
-        optimizer = torch.optim.Adam(model.parameters(), lr=rnn_conf.learning_rate)
+        optimizer = torch.optim.Adam(model.parameters(), lr=cnn_lstm_conf.learning_rate)
 
         train_losses = []
         val_losses = []
     
-        for epoch in range(1, rnn_conf.num_epochs + 1):
+        for epoch in range(1, cnn_lstm_conf.num_epochs + 1):
             train_loss, val_loss = 0.0, 0.0
     
             model.train()
@@ -100,7 +100,7 @@ def train():
             epochs_results.append((epoch, train_loss, val_loss))
 
             print(f'----------------------------------------------\n'
-                  f'epoch: {epoch}/{rnn_conf.num_epochs}\n\n'
+                  f'epoch: {epoch}/{cnn_lstm_conf.num_epochs}\n\n'
                   f'training loss: {train_loss}\n'
                   f'validation loss: {val_loss}\n')
 
