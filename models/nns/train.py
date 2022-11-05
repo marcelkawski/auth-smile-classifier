@@ -6,13 +6,14 @@ import torch.nn as nn
 import pickle as pkl
 import matplotlib.pylab as plt
 from torch.utils.data import DataLoader
+from torch.optim.lr_scheduler import CosineAnnealingLR, ReduceLROnPlateau
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from models._config import CNNLSTM_config as cnn_lstm_conf
 from models.nns.video_cnn_lstm import VideoCNNLSTM
 from models.nns.dataset import prepare_datasets
-from config import NNS_WEIGHTS_DIR, NNS_PLOTS_DIR
+from config import NNS_WEIGHTS_DIR, NNS_PLOTS_DIR, NNS_LEARNING_DATA_DIR
 from utils import get_current_time_str
 
 
@@ -41,6 +42,20 @@ def collate_fn_cnn_lstm(batch):
     return frames_tensor, auth_tensor
 
 
+def get_lr(optimizer):
+    for param_group in optimizer.param_groups:
+        return param_group['lr']
+
+
+def save_learning_process(model_name, training_data):
+    date_str = get_current_time_str()
+    file_name = f'{model_name}-{date_str}.pkl'
+    file_path = os.path.abspath(os.path.join(os.sep, NNS_LEARNING_DATA_DIR, file_name))
+    with open(file_path, 'wb') as outp:
+        pkl.dump(training_data, outp)
+    print(f'Training process data successfully saved into {file_name} file.')
+
+
 def train():
     train_data, val_data, test_data = prepare_datasets()
 
@@ -50,8 +65,20 @@ def train():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f'Model will be trained on: {device}\n')
 
+    training_data = []
+
     if model == 0:
         model_name = 'CNN+LSTM_NN'
+
+        training_data.append({
+            'model_name': model_name,
+            'dropout_p': cnn_lstm_conf.dropout_p,
+            'lstm_num_layers': cnn_lstm_conf.lstm_num_layers,
+            'lstm_hidden_size': cnn_lstm_conf.lstm_hidden_size,
+            'batch_size': cnn_lstm_conf.batch_size,
+            'learning_rate': cnn_lstm_conf.learning_rate,
+            'num_epochs': cnn_lstm_conf.num_epochs,
+        })
 
         train_loader = DataLoader(dataset=train_data, batch_size=cnn_lstm_conf.batch_size, shuffle=True,
                                   collate_fn=collate_fn_cnn_lstm)
@@ -61,14 +88,16 @@ def train():
                                  collate_fn=collate_fn_cnn_lstm)
 
         model = VideoCNNLSTM().to(device)
-        criterion = nn.CrossEntropyLoss()
+        criterion = nn.CrossEntropyLoss(reduction='sum')
         optimizer = torch.optim.Adam(model.parameters(), lr=cnn_lstm_conf.learning_rate)
+        lr_scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5, verbose=True)
 
         train_losses = []
         val_losses = []
     
         for epoch in range(1, cnn_lstm_conf.num_epochs + 1):
             train_loss, val_loss = 0.0, 0.0
+            lr = get_lr(optimizer)
     
             model.train()
             for frames, auth in train_loader:
@@ -100,9 +129,21 @@ def train():
             epochs_results.append((epoch, train_loss, val_loss))
 
             print(f'----------------------------------------------\n'
-                  f'epoch: {epoch}/{cnn_lstm_conf.num_epochs}\n\n'
+                  f'epoch: {epoch}/{cnn_lstm_conf.num_epochs}\n'
+                  f'learning rate: {lr}\n\n'
                   f'training loss: {train_loss}\n'
                   f'validation loss: {val_loss}\n')
+
+            training_data.append({
+                'epoch': epoch,
+                'learning_rate': lr,
+                'training_loss': train_loss,
+                'validation_loss': val_loss
+            })
+
+            lr_scheduler.step(val_loss)
+
+        save_learning_process(model_name, training_data)
 
         model.eval()
         with torch.no_grad():

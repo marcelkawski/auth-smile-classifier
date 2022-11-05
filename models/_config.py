@@ -25,8 +25,8 @@ CNNLSTM_config = DotMap({
     'dropout_p': 0.1,
     'lstm_num_layers': 1,
     'lstm_hidden_size': 100,
-    'batch_size': 1,  # TODO: Pokombinowac z batch_size
-    'learning_rate': 1e-4,
+    'batch_size': 1,
+    'learning_rate': 3e-5,
     'num_epochs': 20,
 })
 
