@@ -125,7 +125,7 @@ def get_model_params(model_num, train_data, val_data, test_data, device):
         test_loader = DataLoader(dataset=test_data, batch_size=cnn_3d_conf.batch_size, shuffle=False,
                                  collate_fn=collate_fn_cnn3d)
 
-        model = mdls.video.r3d_18(mdls.video.R3D_18_Weights.DEFAULT, progress=False)
+        model = mdls.video.r3d_18(weights=mdls.video.R3D_18_Weights.DEFAULT, progress=False)
         num_features = model.fc.in_features
         model.fc = nn.Linear(num_features, nns_conf.num_classes)
 
@@ -133,6 +133,8 @@ def get_model_params(model_num, train_data, val_data, test_data, device):
         optimizer = torch.optim.Adam(model.parameters(), lr=cnn_3d_conf.learning_rate)
         lr_scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5, verbose=True)
         num_epochs = cnn_3d_conf.num_epochs
+        if torch.cuda.is_available():
+            model.cuda()
 
     return model_name, model, loss_func, optimizer, lr_scheduler, train_loader, val_loader, test_loader, num_epochs
 

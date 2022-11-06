@@ -20,7 +20,7 @@ CNNLSTM_config = DotMap({
     'lstm_hidden_size': 100,
     'batch_size': 2,
     'learning_rate': 3e-5,
-    'num_epochs': 5,
+    'num_epochs': 20,
 })
 
 CNN3D_imgs_transforms_config = DotMap({
