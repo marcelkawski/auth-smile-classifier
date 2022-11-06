@@ -5,6 +5,7 @@ import time
 import torch.nn as nn
 import pickle as pkl
 import matplotlib.pylab as plt
+from datetime import timedelta
 from torch.utils.data import DataLoader
 from torch.optim.lr_scheduler import CosineAnnealingLR, ReduceLROnPlateau
 
@@ -56,11 +57,16 @@ def save_learning_process(model_name, training_data):
     print(f'Training process data successfully saved into {file_name} file.')
 
 
+def calculate_exec_time(start, end):
+    exec_time = end - start
+    return exec_time, str(timedelta(seconds=exec_time))
+
+
 def train():
+    start = time.time()
     train_data, val_data, test_data = prepare_datasets()
 
     _, model = handle_arguments()
-    epochs_results = []
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f'Model will be trained on: {device}\n')
@@ -92,58 +98,77 @@ def train():
         optimizer = torch.optim.Adam(model.parameters(), lr=cnn_lstm_conf.learning_rate)
         lr_scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5, verbose=True)
 
-        train_losses = []
-        val_losses = []
-    
+        train_losses, val_losses, train_accuracies, val_accuracies = [], [], [], []
+
         for epoch in range(1, cnn_lstm_conf.num_epochs + 1):
-            train_loss, val_loss = 0.0, 0.0
+            train_loss, val_loss, train_accuracy, val_accuracy = 0.0, 0.0, 0.0, 0.0
             lr = get_lr(optimizer)
-    
+
             model.train()
+            correct = 0
+            total = 0
             for frames, auth in train_loader:
                 frames = frames.to(device)
                 auth = auth.to(device)
 
                 optimizer.zero_grad()
                 output = model(frames)
+                _, predicted = torch.max(output.data, 1)
+
+                total += auth.size(0)
+                correct += (predicted == auth).sum().item()
+                train_accuracy += 100 * correct / total
 
                 loss = criterion(output, auth)
                 loss.backward()
                 optimizer.step()
                 train_loss += loss.item() * frames.size(0)
-    
+
             model.eval()
+            correct = 0
+            total = 0
             for frames, auth in val_loader:
                 frames = frames.to(device)
                 auth = auth.to(device)
 
                 output = model(frames)
+                _, predicted = torch.max(output.data, 1)
+
+                total += auth.size(0)
+                correct += (predicted == auth).sum().item()
+                val_accuracy += 100 * correct / total
+
                 loss = criterion(output, auth)
                 val_loss += loss.item() * frames.size(0)
 
             train_loss = train_loss / len(train_loader)
             val_loss = val_loss / len(val_loader)
+            train_accuracy = train_accuracy / len(train_loader)
+            val_accuracy = val_accuracy / len(val_loader)
+
             train_losses.append(train_loss)
             val_losses.append(val_loss)
-
-            epochs_results.append((epoch, train_loss, val_loss))
+            train_accuracies.append(train_accuracy)
+            val_accuracies.append(val_accuracy)
 
             print(f'----------------------------------------------\n'
                   f'epoch: {epoch}/{cnn_lstm_conf.num_epochs}\n'
                   f'learning rate: {lr}\n\n'
                   f'training loss: {train_loss}\n'
-                  f'validation loss: {val_loss}\n')
+                  f'validation loss: {val_loss}\n\n'
+                  f'training accuracy: {train_accuracy}\n'
+                  f'validation accuracy: {val_accuracy}\n')
 
             training_data.append({
                 'epoch': epoch,
                 'learning_rate': lr,
                 'training_loss': train_loss,
-                'validation_loss': val_loss
+                'validation_loss': val_loss,
+                'training_accuracy': train_accuracy,
+                'validation_accuracy': val_accuracy
             })
 
             lr_scheduler.step(val_loss)
-
-        save_learning_process(model_name, training_data)
 
         model.eval()
         with torch.no_grad():
@@ -161,24 +186,35 @@ def train():
 
             print(f'test accuracy of the model ({model_name}): {100 * correct / total} %')
 
-        weights_file_title = f'weights-{model_name}-{get_current_time_str()}'
+        weights_file_title = f'weights-{model_name}-{get_current_time_str()}.pt'
         torch.save(model.state_dict(), os.path.abspath(os.path.join(os.sep, NNS_WEIGHTS_DIR, weights_file_title)))
 
-        return model_name, train_losses, val_losses
+        end = time.time()
+        exec_time, str_exec_time = calculate_exec_time(start, end)
+        print(f'Learning process took: {str_exec_time}.')
+
+        training_data.append({'execution_time': exec_time})
+        save_learning_process(model_name, training_data)
+
+        return model_name, train_losses, val_losses, train_accuracies, val_accuracies
 
 
-def plot_training(model_name, train_losses, val_losses):
-    plt.plot(train_losses, label='training loss')
-    plt.plot(val_losses, label='validation loss')
+def plot_training_values(model_name, train_values, val_values, train_label, val_label, label):
+    plt.plot(train_values, label=train_label)
+    plt.plot(val_values, label=val_label)
+    plt.legend(loc='upper left')
     plt.xlabel('epochs')
-    plt.ylabel('loss')
-    plt.title(f'Loss in subsequent epochs for learning {model_name}')
+    plt.ylabel(label)
+    plt.title(f'{label.capitalize()} in subsequent epochs for learning {model_name}')
 
-    plot_file_tile = f'loss_dur_tr_plot-{model_name}-{get_current_time_str()}.png'
-    plt.savefig(os.path.abspath(os.path.join(os.sep, NNS_PLOTS_DIR, plot_file_tile)))
+    plot_file_title = f'{label}_dur_tr_plot-{model_name}-{get_current_time_str()}.png'
+    plt.savefig(os.path.abspath(os.path.join(os.sep, NNS_PLOTS_DIR, plot_file_title)))
     plt.show()
 
 
 if __name__ == '__main__':
-    mn, tl, vl = train()
-    plot_training(mn, tl, vl)
+    mn, tl, vl, ta, va = train()
+    plot_training_values(mn, train_values=tl, val_values=vl, train_label='training dataset',
+                         val_label='validation dataset', label='loss')
+    plot_training_values(mn, train_values=ta, val_values=va, train_label='training dataset',
+                         val_label='validation dataset', label='accuracy')
