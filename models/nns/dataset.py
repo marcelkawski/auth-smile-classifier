@@ -59,7 +59,7 @@ def print_data_size(all_data, train_data, val_data, test_data):
     val_data_len = len(val_data)
     test_data_len = len(test_data)
 
-    print(f'\nLengths:\n\n'
+    print(f'\nData sizes:\n\n'
           f'all data: {all_data_len}\n'
           f'training data: {train_data_len} ({round(train_data_len / all_data_len * 100, 1)} %)\n'
           f'validation data: {val_data_len} ({round(val_data_len / all_data_len * 100, 1)} %)\n'

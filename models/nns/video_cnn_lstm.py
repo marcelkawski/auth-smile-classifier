@@ -1,7 +1,7 @@
 import sys
 import os
 import torch.nn as nn
-from torchvision import models
+from torchvision import models as mdls
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
@@ -17,7 +17,7 @@ class VideoCNNLSTM(nn.Module):
         lstm_hidden_size = cnn_lstm_conf.lstm_hidden_size
         lstm_num_layers = cnn_lstm_conf.lstm_num_layers
 
-        baseModel = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
+        baseModel = mdls.resnet18(weights=mdls.ResNet18_Weights.DEFAULT)
         num_features = baseModel.fc.in_features
         baseModel.fc = Identity()
         self.baseModel = baseModel
