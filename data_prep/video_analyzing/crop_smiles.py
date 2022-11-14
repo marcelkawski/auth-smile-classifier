@@ -10,9 +10,8 @@ from config import COMPLETE_SMILES_DATA_FILE_PATH, FACES_SAME_LEN_DIR, FACES_DIR
 
 def create_complete_smiles_data_file():
     if os.path.exists(FACES_SAME_LEN_DIR) and os.listdir(FACES_SAME_LEN_DIR):  # Exists and is not empty.:
-        print('Same length faces directory is not empty so the program supposes that the smiles have been already '
-              'cropped.\n')
-        sys.exit()
+        raise Exception('Same length faces directory is not empty so the program supposes that the smiles have been '
+                        'already cropped.\n')
 
     if not os.path.exists(FACES_SAME_LEN_DIR):
         os.makedirs(FACES_SAME_LEN_DIR)

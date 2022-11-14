@@ -8,6 +8,9 @@ nns_config = DotMap({
     'k_folds': 5
 })
 
+#########################################################
+# CNN LSTM config
+
 CNNLSTM_imgs_transforms_config = DotMap({
     'means': [0.485, 0.456, 0.406],
     'stds': [0.229, 0.224, 0.225],
@@ -25,6 +28,9 @@ CNNLSTM_config = DotMap({
     'num_epochs': 20,
 })
 
+#########################################################
+# 3D CNN config
+
 CNN3D_imgs_transforms_config = DotMap({
     'means': [0.43216, 0.394666, 0.37645],
     'stds': [0.22803, 0.22145, 0.216989],
@@ -33,8 +39,8 @@ CNN3D_imgs_transforms_config = DotMap({
 })
 
 CNN3D_config = DotMap({
-    'batch_size': 2,
-    # 'learning_rate': 3e-5,
-    'learning_rate': 1e-4,
-    'num_epochs': 20,
+    'batch_size': 1,
+    'learning_rate': 3e-5,
+    # 'learning_rate': 1e-4,
+    'num_epochs': 2,
 })

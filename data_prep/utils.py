@@ -50,8 +50,12 @@ def get_filenames_sorted_by_frame_num(directory):
     return sorted(get_all_filenames(directory), key=lambda n: get_frame_num(n))
 
 
-def save_dict_to_json_file(path, title, data):
-    time_str = get_current_time_str()
-    with open(os.path.abspath(os.path.join(os.sep, path, f'{title}-{time_str}.json')), 'w') as f:
-        json.dump(data, f, indent=4)
+def save_dict_to_json_file(path, title, data, time_str=None):
+    if time_str is None:
+        time_str = get_current_time_str()
+        with open(os.path.abspath(os.path.join(os.sep, path, f'{title}-{time_str}.json')), 'w') as f:
+            json.dump(data, f, indent=4)
         print('\nData successfully saved into the json file.\n')
+    else:
+        with open(os.path.abspath(os.path.join(os.sep, path, title)), 'w') as f:
+            json.dump(data, f, indent=4)

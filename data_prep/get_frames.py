@@ -9,9 +9,8 @@ from data_prep.utils import get_all_filenames
 
 if __name__ == '__main__':
     if os.path.exists(FRAMES_DIR) and os.listdir(FRAMES_DIR):  # Exists and is not empty.:
-        print('Videos frames directory is not empty so the program supposes that the faces have been already '
+        raise Exception('Videos frames directory is not empty so the program supposes that the faces have been already '
               'extracted.\n')
-        sys.exit()
 
     if not os.path.exists(FRAMES_DIR):
         os.makedirs(FRAMES_DIR)

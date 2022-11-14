@@ -14,6 +14,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 from config import VIDEOS_DATA_FILEPATH, FACES_SAME_LEN_DIR
 from data_prep.utils import get_filenames_sorted_by_frame_num
 from models._config import CNNLSTM_imgs_transforms_config as cnn_lstm_itc
+from models._config import CNN3D_imgs_transforms_config as cnn_3d_itc
 from models._config import nns_config as nc
 
 
@@ -74,31 +75,38 @@ def denormalize(x_, means, stds):
     return x
 
 
-def prepare_datasets():
+def prepare_datasets(num_model):
     _data = pd.read_csv(VIDEOS_DATA_FILEPATH, delimiter=';')
 
     # vd = VideosDataset(data=_data)
     # vd.show_data_classes_sizes()
 
+    transforms_dict = None
+    if num_model == 0:
+        transforms_dict = cnn_lstm_itc
+    elif num_model == 1:
+        transforms_dict = cnn_3d_itc
+
     train_transform = transforms.Compose([
-        transforms.Resize((cnn_lstm_itc.h, cnn_lstm_itc.w)),
+        transforms.Resize((transforms_dict.h, transforms_dict.w)),
         transforms.RandomHorizontalFlip(p=0.5),
         transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),
         transforms.ToTensor(),
-        transforms.Normalize(cnn_lstm_itc.means, cnn_lstm_itc.stds),
+        transforms.Normalize(transforms_dict.means, transforms_dict.stds),
     ])
 
     test_transform = transforms.Compose([
-        transforms.Resize((cnn_lstm_itc.h, cnn_lstm_itc.w)),
+        transforms.Resize((transforms_dict.h, transforms_dict.w)),
         transforms.ToTensor(),
-        transforms.Normalize(cnn_lstm_itc.means, cnn_lstm_itc.stds),
+        transforms.Normalize(transforms_dict.means, transforms_dict.stds),
     ])
 
     val_transform = transforms.Compose([
-        transforms.Resize((cnn_lstm_itc.h, cnn_lstm_itc.w)),
+        transforms.Resize((transforms_dict.h, transforms_dict.w)),
         transforms.ToTensor(),
-        transforms.Normalize(cnn_lstm_itc.means, cnn_lstm_itc.stds),
+        transforms.Normalize(transforms_dict.means, transforms_dict.stds),
     ])
+
 
     _train_data, _test_data = train_test_split(_data, test_size=nc.test_size)
     _train_data, _val_data = train_test_split(_train_data, test_size=nc.val_size, random_state=1)

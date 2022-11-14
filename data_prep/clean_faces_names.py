@@ -15,8 +15,7 @@ def rename_file(path, old_name, new_name):
 
 if __name__ == '__main__':
     if not os.path.exists(FACES_DIR) or not os.listdir(FACES_DIR):
-        print('Faces directory does not exist or is empty so there is nothing to clean.\n')
-        sys.exit()
+        raise Exception('Faces directory does not exist or is empty so there is nothing to clean.\n')
 
     faces_dirs = get_all_subdirs(FACES_DIR)
 
