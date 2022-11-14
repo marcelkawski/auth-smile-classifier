@@ -4,7 +4,8 @@ from dotmap import DotMap
 nns_config = DotMap({
     'test_size': 0.2,
     'val_size': 0.2,  # <- <this_value> * <train_size>
-    'num_classes': 2
+    'num_classes': 2,
+    'k_folds': 5
 })
 
 CNNLSTM_imgs_transforms_config = DotMap({
@@ -19,7 +20,8 @@ CNNLSTM_config = DotMap({
     'lstm_num_layers': 1,
     'lstm_hidden_size': 100,
     'batch_size': 2,
-    'learning_rate': 3e-5,
+    # 'learning_rate': 3e-5,
+    'learning_rate': 1e-4,
     'num_epochs': 20,
 })
 
@@ -32,6 +34,7 @@ CNN3D_imgs_transforms_config = DotMap({
 
 CNN3D_config = DotMap({
     'batch_size': 2,
-    'learning_rate': 3e-5,
+    # 'learning_rate': 3e-5,
+    'learning_rate': 1e-4,
     'num_epochs': 20,
 })
