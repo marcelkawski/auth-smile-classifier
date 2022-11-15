@@ -39,6 +39,9 @@ FACES_FEATURES_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data',
                                                   f'faces_features{DESIRED_FACE_WIDTH}'))
 FACES_FEATURES_DATA_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data',
                                                        f'faces_features_data{DESIRED_FACE_WIDTH}'))
+FACES_FEATURES_SCALED_DATA_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'faces_features_scaled_data'))
+LIPS_CORNERS_DATA_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data',
+                                                     'faces_features_scaled_data__lips_corners'))
 
 # -----FACES FEATURES-----
 NUM_FACES_FEATURES = 68
