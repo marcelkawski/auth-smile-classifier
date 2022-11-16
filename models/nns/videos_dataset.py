@@ -6,7 +6,6 @@ from torch.utils.data import Dataset
 from torchvision import transforms
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
-from torchvision.transforms.functional import to_pil_image
 from PIL import Image
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -65,14 +64,6 @@ def print_data_size(all_data, train_data, val_data, test_data):
           f'training data: {train_data_len} ({round(train_data_len / all_data_len * 100, 1)} %)\n'
           f'validation data: {val_data_len} ({round(val_data_len / all_data_len * 100, 1)} %)\n'
           f'test data: {test_data_len} ({round(test_data_len / all_data_len * 100, 1)} %)\n')
-
-
-def denormalize(x_, means, stds):
-    x = x_.clone()
-    for i in range(3):
-        x[i] = x[i]*stds[i]+means[i]
-    x = to_pil_image(x)
-    return x
 
 
 def prepare_datasets(num_model):

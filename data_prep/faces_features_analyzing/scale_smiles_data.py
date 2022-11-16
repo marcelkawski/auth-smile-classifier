@@ -24,7 +24,7 @@ def scale_smiles_data(features_nums=None):
     with open(COMPLETE_SMILES_DATA_FILE_PATH, 'r') as fp:
         smiles_data = json.load(fp)['frames']
 
-    for data_file_name in data_files_names[:3]:
+    for data_file_name in data_files_names:
         print(data_file_name)
         scaled_data_filepath = os.path.abspath(os.path.join(os.sep, FACES_FEATURES_SCALED_DATA_DIR, data_file_name))
         data_filepath = os.path.abspath(os.path.join(os.sep, FACES_FEATURES_DATA_DIR, data_file_name))
