@@ -31,6 +31,8 @@ def scale_smiles_data(scaled_data_filename, features_nums=None):
                                                           f'{scaled_data_filename}_x.csv'))
     scaled_data_y_filepath = os.path.abspath(os.path.join(os.sep, FACES_FEATURES_SCALED_DATA_DIR,
                                                           f'{scaled_data_filename}_y.csv'))
+    scaled_data_titles_filepath = os.path.abspath(os.path.join(os.sep, FACES_FEATURES_SCALED_DATA_DIR,
+                                                               f'{scaled_data_filename}_titles.csv'))
 
     for data_file_name in data_files_names:
         print(data_file_name)
@@ -53,7 +55,9 @@ def scale_smiles_data(scaled_data_filename, features_nums=None):
         data_files_scaled += 1
 
     authenticities = pd.DataFrame(authenticities)
-    authenticities.to_csv(scaled_data_y_filepath, mode='a', sep=';', index=False, header=False)
+    authenticities.to_csv(scaled_data_y_filepath, sep=';', index=False, header=False)
+    titles = pd.DataFrame(data_files_names)
+    titles.to_csv(scaled_data_titles_filepath, sep=';', index=False, header=False)
 
     print(f'Done! Successfully scaled {data_files_scaled} data files into the new csv files.')
 
