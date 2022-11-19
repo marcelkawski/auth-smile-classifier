@@ -100,7 +100,7 @@ def prepare_datasets(num_model):
 
 
     _train_data, _test_data = train_test_split(_data, test_size=nc.test_size)
-    _train_data, _val_data = train_test_split(_train_data, test_size=nc.val_size, random_state=1)
+    _train_data, _val_data = train_test_split(_train_data, test_size=nc.val_size)
 
     _train_data = VideosDataset(_train_data, transform=train_transform)
     _val_data = VideosDataset(_val_data, transform=val_transform)
