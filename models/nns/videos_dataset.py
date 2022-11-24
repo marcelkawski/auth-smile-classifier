@@ -1,20 +1,14 @@
 import os
 import sys
 import torch
-import pandas as pd
-from torch.utils.data import Dataset
-from torchvision import transforms
-from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from PIL import Image
+from torch.utils.data import Dataset
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from config import VIDEOS_DATA_FILEPATH, FACES_SAME_LEN_DIR
+from config import FACES_SAME_LEN_DIR
 from data_prep.utils import get_filenames_sorted_by_frame_num
-from models._config import CNNLSTM_imgs_transforms_config as cnn_lstm_itc
-from models._config import CNN3D_imgs_transforms_config as cnn_3d_itc
-from models._config import nns_config as nc
 
 
 class VideosDataset(Dataset):
@@ -52,60 +46,3 @@ class VideosDataset(Dataset):
         plt.title('Liczebność klas [%]')
         plt.show()
 
-
-def print_data_size(all_data, train_data, val_data, test_data):
-    all_data_len = len(all_data)
-    train_data_len = len(train_data)
-    val_data_len = len(val_data)
-    test_data_len = len(test_data)
-
-    print(f'\nData sizes:\n\n'
-          f'all data: {all_data_len}\n'
-          f'training data: {train_data_len} ({round(train_data_len / all_data_len * 100, 1)} %)\n'
-          f'validation data: {val_data_len} ({round(val_data_len / all_data_len * 100, 1)} %)\n'
-          f'test data: {test_data_len} ({round(test_data_len / all_data_len * 100, 1)} %)\n')
-
-
-def prepare_datasets(num_model):
-    _data = pd.read_csv(VIDEOS_DATA_FILEPATH, delimiter=';')
-
-    # vd = VideosDataset(data=_data)
-    # vd.show_data_classes_sizes()
-
-    transforms_dict = None
-    if num_model == 0:
-        transforms_dict = cnn_lstm_itc
-    elif num_model == 1:
-        transforms_dict = cnn_3d_itc
-
-    train_transform = transforms.Compose([
-        transforms.Resize((transforms_dict.h, transforms_dict.w)),
-        transforms.RandomHorizontalFlip(p=0.5),
-        transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),
-        transforms.ToTensor(),
-        transforms.Normalize(transforms_dict.means, transforms_dict.stds),
-    ])
-
-    test_transform = transforms.Compose([
-        transforms.Resize((transforms_dict.h, transforms_dict.w)),
-        transforms.ToTensor(),
-        transforms.Normalize(transforms_dict.means, transforms_dict.stds),
-    ])
-
-    val_transform = transforms.Compose([
-        transforms.Resize((transforms_dict.h, transforms_dict.w)),
-        transforms.ToTensor(),
-        transforms.Normalize(transforms_dict.means, transforms_dict.stds),
-    ])
-
-
-    _train_data, _test_data = train_test_split(_data, test_size=nc.test_size)
-    _train_data, _val_data = train_test_split(_train_data, test_size=nc.val_size)
-
-    _train_data = VideosDataset(_train_data, transform=train_transform)
-    _val_data = VideosDataset(_val_data, transform=val_transform)
-    _test_data = VideosDataset(_test_data, transform=test_transform)
-
-    print_data_size(_data, _train_data, _val_data, _test_data)
-
-    return _train_data, _val_data, _test_data

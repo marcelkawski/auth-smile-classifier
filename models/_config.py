@@ -1,11 +1,17 @@
+import sys
+import os
 from dotmap import DotMap
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from config import CURRENT_MIN_NUM_SMILE_FRAMES
 
 
 nns_config = DotMap({
     'test_size': 0.2,
     'val_size': 0.2,  # <- <this_value> * <train_size>
     'num_classes': 2,
-    'k_folds': 5
+    # 'k_folds': 5
 })
 
 #########################################################
@@ -42,5 +48,18 @@ CNN3D_config = DotMap({
     'batch_size': 1,
     'learning_rate': 3e-5,
     # 'learning_rate': 1e-4,
-    'num_epochs': 2,
+    'num_epochs': 5,
+})
+
+#########################################################
+# LSTM config
+
+LSTM_config = DotMap({
+    'learning_rate': 1e-4,
+    'batch_size': 10,
+    'num_epochs': 500,
+    'num_features': 4,
+    'seq_length': CURRENT_MIN_NUM_SMILE_FRAMES,
+    'num_hidden': 20,
+    'num_lstm_layers': 1
 })

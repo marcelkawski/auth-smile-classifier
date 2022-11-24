@@ -17,8 +17,10 @@ from models._config import CNNLSTM_config as cnn_lstm_conf
 from models._config import CNN3D_config as cnn_3d_conf
 from models._config import CNNLSTM_imgs_transforms_config as cnn_lstm_itc
 from models._config import CNN3D_imgs_transforms_config as cnn_3d_itc
+from models._config import LSTM_config as lstm_conf
 from models.nns.video_cnn_lstm import VideoCNNLSTM
-from models.nns.videos_dataset import prepare_datasets
+from models.nns.lstm import LSTM
+from models.nns.dataset import prepare_datasets
 from config import NNS_WEIGHTS_DIR, NNS_PLOTS_DIR, NNS_LEARNING_DATA_DIR
 from utils import get_current_time_str
 from data_prep.utils import save_dict_to_json_file
@@ -32,11 +34,16 @@ def handle_arguments():
 
     arguments[1] = int(arguments[1])
 
-    if int(arguments[1]) not in [0, 1]:
+    if int(arguments[1]) not in [0, 1, 2]:
         raise Exception('Invalid neural network architecture number.\n'
                         'Options to choose:\n'
+                        '--------------------------------------------------\n'
+                        'Analyzing videos:\n'
                         '0: CNN + LSTM neural network\n'
-                        '1: 3D CNN (18 layer Resnet3D) neural network')
+                        '1: 3D CNN (18 layer Resnet3D) neural network\n'
+                        '--------------------------------------------------\n'
+                        'Analyzing faces features:\n'
+                        '2: LSTM')
 
     return arguments
 
@@ -79,8 +86,7 @@ def calculate_exec_time(start, end):
 def get_model_params(model_num, train_data, val_data, test_data, device):
     training_proc_data = []
     model_name, model, loss_func, optimizer, lr_scheduler, train_loader, val_loader, test_loader, num_epochs, \
-        transforms_dict, config_dict, collate_fn = None, None, None, None, None, None, None, None, None, None, None, \
-                                                   None
+        collate_fn, transforms_dict, config_dict = None, None, None, None, None, None, None, None, None, None, {}, {}
 
     if model_num == 0:
         model_name = 'CNN+LSTM_NN'
@@ -91,9 +97,7 @@ def get_model_params(model_num, train_data, val_data, test_data, device):
         model = VideoCNNLSTM().to(device)
         loss_func = nn.CrossEntropyLoss(reduction='sum')
         # optimizer = torch.optim.Adam(model.parameters(), lr=cnn_lstm_conf.learning_rate)
-        optimizer = torch.optim.SGD(model.parameters(), lr=cnn_lstm_conf.learning_rate)
-        lr_scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5, verbose=True)
-        num_epochs = cnn_lstm_conf.num_epochs
+        optimizer = torch.optim.SGD(model.parameters(), lr=config_dict.learning_rate)
 
     elif model_num == 1:
         model_name = '3D_CNN_NN'
@@ -107,19 +111,35 @@ def get_model_params(model_num, train_data, val_data, test_data, device):
 
         loss_func = nn.CrossEntropyLoss(reduction='sum')
         # optimizer = torch.optim.Adam(model.parameters(), lr=cnn_3d_conf.learning_rate)
-        optimizer = torch.optim.SGD(model.parameters(), lr=cnn_3d_conf.learning_rate)
-        lr_scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5, verbose=True)
-        num_epochs = cnn_3d_conf.num_epochs
+        optimizer = torch.optim.SGD(model.parameters(), lr=config_dict.learning_rate)
 
         if torch.cuda.is_available():
             model.cuda()
 
-    train_loader = DataLoader(dataset=train_data, batch_size=config_dict.batch_size, shuffle=True,
-                              collate_fn=collate_fn)
-    val_loader = DataLoader(dataset=val_data, batch_size=cnn_lstm_conf.batch_size, shuffle=False,
-                            collate_fn=collate_fn)
-    test_loader = DataLoader(dataset=test_data, batch_size=cnn_lstm_conf.batch_size, shuffle=False,
-                             collate_fn=collate_fn)
+    elif model_num == 2:
+        model_name = 'LSTM'
+        config_dict = lstm_conf
+
+        model = LSTM().to(device)
+        loss_func = nn.CrossEntropyLoss()
+        optimizer = torch.optim.Adam(model.parameters(), lr=config_dict.learning_rate)
+        # optimizer = torch.optim.SGD(model.parameters(), lr=config_dict.learning_rate)
+
+    num_epochs = config_dict.num_epochs
+    lr_scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5, verbose=True)
+
+    if collate_fn is not None:
+        train_loader = DataLoader(dataset=train_data, batch_size=config_dict.batch_size, shuffle=True,
+                                  collate_fn=collate_fn)
+        val_loader = DataLoader(dataset=val_data, batch_size=config_dict.batch_size, shuffle=False,
+                                collate_fn=collate_fn)
+        test_loader = DataLoader(dataset=test_data, batch_size=config_dict.batch_size, shuffle=False,
+                                 collate_fn=collate_fn)
+    else:
+        train_loader = DataLoader(dataset=train_data, batch_size=config_dict.batch_size, shuffle=False)
+        val_loader = DataLoader(dataset=val_data, batch_size=config_dict.batch_size, drop_last=True, shuffle=False)
+        test_loader = DataLoader(dataset=test_data, batch_size=config_dict.batch_size, drop_last=True,
+                                 shuffle=False)
 
     training_proc_data.append({
         'model_name': model_name,
@@ -137,7 +157,7 @@ def get_model_params(model_num, train_data, val_data, test_data, device):
            training_proc_data
 
 
-def train_loop(model, train_loader, optimizer, loss_func, device):
+def train_loop(model, train_loader, optimizer, loss_func, device, num_model):
     model.train()
     correct, total = 0, 0
     train_loss = 0.0
@@ -145,11 +165,19 @@ def train_loop(model, train_loader, optimizer, loss_func, device):
         frames = frames.to(device)
         auth = auth.to(device)
 
+        if num_model == 2:
+            model.init_hidden(lstm_conf.batch_size, device=device)
+
         optimizer.zero_grad()
         output = model(frames)
         _, predicted = torch.max(output.data, 1)
 
         total += auth.size(0)
+
+        if num_model == 2:
+            length, _ = auth.size()
+            auth = auth.view(1, length).reshape((length,))
+
         correct += (predicted == auth).sum().item()
 
         loss = loss_func(output, auth)
@@ -162,7 +190,7 @@ def train_loop(model, train_loader, optimizer, loss_func, device):
     return train_loss, train_accuracy
 
 
-def val_loop(model, val_loader, loss_func, device):
+def val_loop(model, val_loader, loss_func, device, num_model):
     model.eval()
     correct, total = 0, 0
     val_loss = 0.0
@@ -174,6 +202,10 @@ def val_loop(model, val_loader, loss_func, device):
         _, predicted = torch.max(output.data, 1)
 
         total += auth.size(0)
+        if num_model == 2:
+            length, _ = auth.size()
+            auth = auth.view(1, length).reshape((length,))
+
         correct += (predicted == auth).sum().item()
 
         loss = loss_func(output, auth)
@@ -184,7 +216,7 @@ def val_loop(model, val_loader, loss_func, device):
     return val_loss, val_accuracy
 
 
-def test_loop(model, best_model_dict, test_loader, device):
+def test_loop(model, best_model_dict, test_loader, device, num_model):
     model.eval()
     model.load_state_dict(best_model_dict)  # test on the best model
     with torch.no_grad():
@@ -197,6 +229,10 @@ def test_loop(model, best_model_dict, test_loader, device):
             _, predicted = torch.max(outputs.data, 1)
 
             total += auths.size(0)
+            if num_model == 2:
+                length, _ = auths.size()
+                auths = auths.view(1, length).reshape((length,))
+
             correct += (predicted == auths).sum().item()
 
     test_accuracy = 100 * correct / total
@@ -227,13 +263,15 @@ def train(date_str):
         best_loss = float('inf')
         best_epoch = 1
 
+        print('epochs: ', num_epochs)
+
         for epoch in range(1, num_epochs + 1):
             lr = get_lr(optimizer)
 
             # training
-            train_loss, train_accuracy = train_loop(model, train_loader, optimizer, loss_func, device)
+            train_loss, train_accuracy = train_loop(model, train_loader, optimizer, loss_func, device, num_model)
             # validating
-            val_loss, val_accuracy = val_loop(model, val_loader, loss_func, device)
+            val_loss, val_accuracy = val_loop(model, val_loader, loss_func, device, num_model)
 
             if val_loss < best_loss:
                 best_model_dict = deepcopy(model.state_dict())
@@ -265,7 +303,7 @@ def train(date_str):
             lr_scheduler.step(val_loss)
 
         # testing
-        test_accuracy = test_loop(model, best_model_dict, test_loader, device)
+        test_accuracy = test_loop(model, best_model_dict, test_loader, device, num_model)
         print(f'test accuracy of the model ({model_name}): {test_accuracy} %')
 
         save_best_model(model_name, best_model_dict, date_str)
