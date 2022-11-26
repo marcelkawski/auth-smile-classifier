@@ -1,34 +1,15 @@
 import os
 import sys
-import pandas as pd
-import numpy as np
-from jedi.api.refactoring import inline
-from tqdm.auto import tqdm
 import torch
-import torch.autograd as autograd
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
-from torch.utils.data import Dataset, DataLoader
 import pytorch_lightning as pl
-import seaborn as sns
-from pylab import rcParams
-from matplotlib import rc
-from matplotlib.ticker import MaxNLocator
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
-from multiprocessing import cpu_count
-from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
-from pytorch_lightning.loggers import TensorBoardLogger
 from torchmetrics.functional import accuracy
-from sklearn.metrics import classification_report, confusion_matrix
+
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from config import CURRENT_FACES_FEATURES_DATA_X, CURRENT_FACES_FEATURES_DATA_Y, CURRENT_MIN_NUM_SMILE_FRAMES
-from models._config import nns_config as nns_conf
 from models._config import LSTM_config as lstm_conf
-from models.lstm.ffs_dataset import FacesFeaturesDataModule
 
 
 class FacesFeaturesLSTM(nn.Module):
@@ -49,3 +30,68 @@ class FacesFeaturesLSTM(nn.Module):
         _, (hidden, _) = self.lstm(x)
         out = hidden[-1]
         return self.classifier(out)
+
+
+class SmileAuthenticityPredictor(pl.LightningModule):
+    def __init__(self, num_features: int, num_classes: int):
+        super().__init__()
+        self.model = FacesFeaturesLSTM(num_features=num_features, num_classes=num_classes)
+        self.loss_func = nn.CrossEntropyLoss()
+
+    def forward(self, x, auths=None):
+        output = self.model(x)
+        loss = 0
+        if auths is not None:
+            loss = self.loss_func(output, auths)
+        return loss, output
+
+    def training_step(self, batch, batch_idx):
+        faces_features = batch['faces_features']
+        authenticities = batch['authenticity']
+
+        loss, outputs = self(faces_features, authenticities)
+        predictions = torch.argmax(outputs, dim=1)
+        acc = accuracy(predictions, authenticities)
+
+        self.log('train_loss', loss, prog_bar=True, logger=True)
+        self.log('train_accuracy', acc, prog_bar=True, logger=True)
+
+        return {
+            'loss': loss,
+            'accuracy': accuracy
+        }
+
+    def validation_step(self, batch, batch_idx):
+        faces_features = batch['faces_features']
+        authenticities = batch['authenticity']
+
+        loss, outputs = self(faces_features, authenticities)
+        predictions = torch.argmax(outputs, dim=1)
+        acc = accuracy(predictions, authenticities)
+
+        self.log('val_loss', loss, prog_bar=True, logger=True)
+        self.log('val_accuracy', acc, prog_bar=True, logger=True)
+
+        return {
+            'loss': loss,
+            'accuracy': accuracy
+        }
+
+    def test_step(self, batch, batch_idx):
+        faces_features = batch['faces_features']
+        authenticities = batch['authenticity']
+
+        loss, outputs = self(faces_features, authenticities)
+        predictions = torch.argmax(outputs, dim=1)
+        acc = accuracy(predictions, authenticities)
+
+        self.log('test_loss', loss, prog_bar=True, logger=True)
+        self.log('test_accuracy', acc, prog_bar=True, logger=True)
+
+        return {
+            'loss': loss,
+            'accuracy': accuracy
+        }
+
+    def configure_optimizers(self):
+        return optim.Adam(self.parameters(), lr=lstm_conf.learning_rate)

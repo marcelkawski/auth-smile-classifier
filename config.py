@@ -50,6 +50,8 @@ CURRENT_FACES_FEATURES_DATA_TITLES = os.path.abspath(os.path.join(os.sep, ROOT_D
                                                                   f'{CUR_FFS_DATA_NAME}_{CUR_FFS_DATA_MODE}_'
                                                                   f'titles.csv'))
 
+LIGHTNING_LOG_FILEPATH = os.path.abspath(os.path.join(os.sep, ROOT_DIR, FACES_FEATURES_DATA_DIR, 'lightning_logs'))
+
 LIPS_CORNER1_IDX = 48
 LIPS_CORNER2_IDX = 54
 FFS_DATA_CONFIG = {

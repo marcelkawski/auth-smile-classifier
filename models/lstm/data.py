@@ -20,12 +20,13 @@ from sklearn.preprocessing import LabelEncoder
 from multiprocessing import cpu_count
 from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 from pytorch_lightning.loggers import TensorBoardLogger
+from tensorboard import program
 from torchmetrics.functional import accuracy
 from sklearn.metrics import classification_report, confusion_matrix
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from config import CURRENT_FACES_FEATURES_DATA_X, CURRENT_FACES_FEATURES_DATA_Y, CURRENT_MIN_NUM_SMILE_FRAMES
+from config import CURRENT_FACES_FEATURES_DATA_X, CURRENT_FACES_FEATURES_DATA_Y
 from models._config import nns_config as nns_conf
 from models._config import LSTM_config as lstm_conf
 from models.lstm.ffs_dataset import FacesFeaturesDataModule
@@ -49,6 +50,4 @@ def prepare_data():
     train_data, test_data = train_test_split(data, test_size=nns_conf.test_size)
     data_module = FacesFeaturesDataModule(train_data, test_data, batch_size=lstm_conf.batch_size)
 
-
-if __name__ == '__main__':
-    prepare_data()
+    return data_module, ffs_columns
