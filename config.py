@@ -35,26 +35,30 @@ FACES_FEATURES_DET_FP = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data_pre
 DESIRED_FACE_WIDTH = 256
 DESIRED_LEFT_EYE_POS = 0.35
 
-FACES_FEATURES_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data',
-                                                  f'faces_features{DESIRED_FACE_WIDTH}'))
-FACES_FEATURES_DATA_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data',
-                                                       f'faces_features_data{DESIRED_FACE_WIDTH}'))
-FACES_FEATURES_SCALED_DATA_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'faces_features_scaled_data'))
-LIPS_CORNERS_DATA_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data',
-                                                     'faces_features_scaled_data__lips_corners'))
-CURRENT_FACES_FEATURES_DATA_X = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'faces_features_scaled_data',
-                                                             'lips_corners_x.csv'))
-CURRENT_FACES_FEATURES_DATA_Y = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'faces_features_scaled_data',
-                                                             'lips_corners_y.csv'))
-CURRENT_FACES_FEATURES_DATA_TITLES = os.path.abspath(
-    os.path.join(os.sep, ROOT_DIR, 'data', 'faces_features_scaled_data',
-                 'lips_corners_titles.csv'))
-
-# -----FACES FEATURES-----
-NUM_FACES_FEATURES = 68
+FACES_FEATURES_WIDTH_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data',
+                                                        f'faces_features{DESIRED_FACE_WIDTH}'))
+FACES_FEATURES_DATA_WIDTH_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data',
+                                                             f'faces_features_data{DESIRED_FACE_WIDTH}'))
+FACES_FEATURES_DATA_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'faces_features_data'))
+CUR_FFS_DATA_MODE = 'scaled'
+CUR_FFS_DATA_NAME = 'lips_corners'
+CURRENT_FACES_FEATURES_DATA_X = os.path.abspath(os.path.join(os.sep, ROOT_DIR, FACES_FEATURES_DATA_DIR,
+                                                             f'{CUR_FFS_DATA_NAME}_{CUR_FFS_DATA_MODE}_x.csv'))
+CURRENT_FACES_FEATURES_DATA_Y = os.path.abspath(os.path.join(os.sep, ROOT_DIR, FACES_FEATURES_DATA_DIR,
+                                                             'authenticity.csv'))
+CURRENT_FACES_FEATURES_DATA_TITLES = os.path.abspath(os.path.join(os.sep, ROOT_DIR, FACES_FEATURES_DATA_DIR,
+                                                                  f'{CUR_FFS_DATA_NAME}_{CUR_FFS_DATA_MODE}_'
+                                                                  f'titles.csv'))
 
 LIPS_CORNER1_IDX = 48
 LIPS_CORNER2_IDX = 54
+FFS_DATA_CONFIG = {
+    'features_name': 'lips_corners',
+    'mode': 'scaled',  # 'scaled' / 'first'
+    'features_nums': [LIPS_CORNER1_IDX, LIPS_CORNER2_IDX]
+}
+
+NUM_FACES_FEATURES = 68
 
 BEG_SMILE_THRESHOLD = 1
 END_SMILE_THRESHOLD = 0.05

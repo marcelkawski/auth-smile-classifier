@@ -5,21 +5,21 @@ import pandas as pd
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from config import FACES_FEATURES_SCALED_DATA_DIR, FACES_FEATURES_DATA_DIR, COMPLETE_SMILES_DATA_FILE_PATH, \
+from config import FACES_FEATURES_DATA_DIR, FACES_FEATURES_DATA_WIDTH_DIR, COMPLETE_SMILES_DATA_FILE_PATH, \
     VIDEOS_DATA_FILEPATH
 from data_prep.utils import get_all_filenames
 
 
 def scale_smiles_data(scaled_data_filename, features_nums=None):
-    if os.path.exists(FACES_FEATURES_SCALED_DATA_DIR) and os.listdir(FACES_FEATURES_SCALED_DATA_DIR):
-        # Exists and is not empty.:
-        raise Exception('Scaled faces features data directory is not empty so the program supposes that the faces '
-                        'have been already extracted.\n')
+    # if os.path.exists(FACES_FEATURES_SCALED_DATA_DIR) and os.listdir(FACES_FEATURES_SCALED_DATA_DIR):
+    #     # Exists and is not empty.:
+    #     raise Exception('Scaled faces features data directory is not empty so the program supposes that the faces '
+    #                     'have been already extracted.\n')
 
-    if not os.path.exists(FACES_FEATURES_SCALED_DATA_DIR):
-        os.makedirs(FACES_FEATURES_SCALED_DATA_DIR)
+    if not os.path.exists(FACES_FEATURES_DATA_DIR):
+        os.makedirs(FACES_FEATURES_DATA_DIR)
 
-    data_files_names = get_all_filenames(FACES_FEATURES_DATA_DIR)
+    data_files_names = get_all_filenames(FACES_FEATURES_DATA_WIDTH_DIR)
     data_files_scaled = 0
 
     with open(COMPLETE_SMILES_DATA_FILE_PATH, 'r') as fp:
@@ -27,16 +27,16 @@ def scale_smiles_data(scaled_data_filename, features_nums=None):
     videos_data = pd.read_csv(VIDEOS_DATA_FILEPATH, delimiter=';')
     authenticities = []
 
-    scaled_data_x_filepath = os.path.abspath(os.path.join(os.sep, FACES_FEATURES_SCALED_DATA_DIR,
+    scaled_data_x_filepath = os.path.abspath(os.path.join(os.sep, FACES_FEATURES_DATA_DIR,
                                                           f'{scaled_data_filename}_x.csv'))
-    scaled_data_y_filepath = os.path.abspath(os.path.join(os.sep, FACES_FEATURES_SCALED_DATA_DIR,
+    scaled_data_y_filepath = os.path.abspath(os.path.join(os.sep, FACES_FEATURES_DATA_DIR,
                                                           f'{scaled_data_filename}_y.csv'))
-    scaled_data_titles_filepath = os.path.abspath(os.path.join(os.sep, FACES_FEATURES_SCALED_DATA_DIR,
+    scaled_data_titles_filepath = os.path.abspath(os.path.join(os.sep, FACES_FEATURES_DATA_DIR,
                                                                f'{scaled_data_filename}_titles.csv'))
 
     for data_file_name in data_files_names:
         print(data_file_name)
-        data_x_filepath = os.path.abspath(os.path.join(os.sep, FACES_FEATURES_DATA_DIR, data_file_name))
+        data_x_filepath = os.path.abspath(os.path.join(os.sep, FACES_FEATURES_DATA_WIDTH_DIR, data_file_name))
         video_name = data_file_name.split('.csv')[0]
 
         authenticity = videos_data.loc[videos_data['video_filename'] == video_name, 'authenticity'].iloc[0]
@@ -64,7 +64,7 @@ def scale_smiles_data(scaled_data_filename, features_nums=None):
 
 if __name__ == '__main__':
     # Change if needed.
-    sc_data_filename = 'lips_corners'
+    sc_data_filename = 'lips_corners2'
     f_nums = [48, 54]
 
     scale_smiles_data(sc_data_filename, features_nums=f_nums)

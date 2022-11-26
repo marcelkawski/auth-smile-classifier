@@ -4,6 +4,7 @@ import torch
 import time
 import torch.nn as nn
 import matplotlib.pylab as plt
+import numpy as np
 from copy import deepcopy
 from datetime import timedelta
 from torch.utils.data import DataLoader
@@ -98,6 +99,7 @@ def get_model_params(model_num, train_data, val_data, test_data, device):
         loss_func = nn.CrossEntropyLoss(reduction='sum')
         # optimizer = torch.optim.Adam(model.parameters(), lr=cnn_lstm_conf.learning_rate)
         optimizer = torch.optim.SGD(model.parameters(), lr=config_dict.learning_rate)
+        lr_scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5, verbose=True)
 
     elif model_num == 1:
         model_name = '3D_CNN_NN'
@@ -112,6 +114,7 @@ def get_model_params(model_num, train_data, val_data, test_data, device):
         loss_func = nn.CrossEntropyLoss(reduction='sum')
         # optimizer = torch.optim.Adam(model.parameters(), lr=cnn_3d_conf.learning_rate)
         optimizer = torch.optim.SGD(model.parameters(), lr=config_dict.learning_rate)
+        lr_scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5, verbose=True)
 
         if torch.cuda.is_available():
             model.cuda()
@@ -126,7 +129,6 @@ def get_model_params(model_num, train_data, val_data, test_data, device):
         # optimizer = torch.optim.SGD(model.parameters(), lr=config_dict.learning_rate)
 
     num_epochs = config_dict.num_epochs
-    lr_scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5, verbose=True)
 
     if collate_fn is not None:
         train_loader = DataLoader(dataset=train_data, batch_size=config_dict.batch_size, shuffle=True,
@@ -218,7 +220,7 @@ def val_loop(model, val_loader, loss_func, device, num_model):
 
 def test_loop(model, best_model_dict, test_loader, device, num_model):
     model.eval()
-    model.load_state_dict(best_model_dict)  # test on the best model
+    model.load_state_dict(best_model_dict)  # tests on the best model
     with torch.no_grad():
         correct, total = 0, 0
         for frames, auths in test_loader:
@@ -254,7 +256,7 @@ def train(date_str):
     train_data, val_data, test_data = prepare_datasets(num_model)
     model_name, model, loss_func, optimizer, lr_scheduler, train_loader, val_loader, test_loader, num_epochs, \
         training_proc_data = get_model_params(num_model, train_data, val_data, test_data, device)
-    model_values_to_check = [model, loss_func, optimizer, lr_scheduler, train_loader, val_loader, test_loader]
+    model_values_to_check = [model, loss_func, optimizer, train_loader, val_loader, test_loader]
 
     if all(mv is not None for mv in model_values_to_check):
         train_losses, val_losses, train_accuracies, val_accuracies = [], [], [], []
@@ -300,11 +302,12 @@ def train(date_str):
                 'validation_accuracy': val_accuracy
             })
 
-            lr_scheduler.step(val_loss)
+            if lr_scheduler is not None:
+                lr_scheduler.step(val_loss)
 
         # testing
         test_accuracy = test_loop(model, best_model_dict, test_loader, device, num_model)
-        print(f'test accuracy of the model ({model_name}): {test_accuracy} %')
+        print(f'tests accuracy of the model ({model_name}): {test_accuracy} %')
 
         save_best_model(model_name, best_model_dict, date_str)
 
@@ -318,24 +321,31 @@ def train(date_str):
         training_proc_data.append({
             'execution_time': exec_time,
             'best_val_loss': best_loss,
-            'best_epoch': best_epoch
+            'best_epoch': best_epoch,
+            'test_accuracy': test_accuracy
         })
 
         save_learning_process(model_name, training_proc_data, date_str)
-        epochs_list = [i for i in range(1, num_epochs + 1)]
+        epochs_list = [i for i in range(num_epochs)]
+        if num_epochs < 100:
+            step = 1
+        else:
+            step = 100
 
-        return model_name, train_losses, val_losses, train_accuracies, val_accuracies, epochs_list
+        return model_name, train_losses, val_losses, train_accuracies, val_accuracies, epochs_list, step
 
     else:
         raise Exception('Error: Some of the variables: model/loss function/optimizer/learning rate scheduler/train '
-                        'data loader/validation data loader/test data loader are None.\n')
+                        'data loader/validation data loader/tests data loader are None.\n')
 
 
-def plot_training_values(model_name, x_values, train_values, val_values, train_label, val_label, label, date_str, loc):
+def plot_training_values(model_name, x_values, train_values, val_values, train_label, val_label, label, date_str, loc,
+                         step):
     plt.plot(x_values, train_values, label=train_label)
     plt.plot(x_values, val_values, label=val_label)
     plt.legend(loc=loc)
     plt.xticks(x_values)
+    plt.xticks(np.arange(x_values[0], x_values[-1], step=step))
     plt.xlabel('epochs')
     plt.ylabel(label)
     plt.title(f'{label.capitalize()} in subsequent epochs for learning {model_name}')
@@ -347,8 +357,9 @@ def plot_training_values(model_name, x_values, train_values, val_values, train_l
 
 if __name__ == '__main__':
     date_str = get_current_time_str()
-    mn, tl, vl, ta, va, el = train(date_str)
+    mn, tl, vl, ta, va, el, st = train(date_str)
     plot_training_values(mn, x_values=el, train_values=tl, val_values=vl, train_label='training dataset',
-                         val_label='validation dataset', label='loss', date_str=date_str, loc='lower left')
+                         val_label='validation dataset', label='loss', date_str=date_str, loc='lower left', step=st)
     plot_training_values(mn, x_values=el, train_values=ta, val_values=va, train_label='training dataset',
-                         val_label='validation dataset', label='accuracy', date_str=date_str, loc='upper left')
+                         val_label='validation dataset', label='accuracy', date_str=date_str, loc='upper left',
+                         step=st)

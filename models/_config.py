@@ -54,12 +54,20 @@ CNN3D_config = DotMap({
 #########################################################
 # LSTM config
 
+# LSTM_config = DotMap({
+#     'learning_rate': 1e-4,
+#     'batch_size': 10,
+#     'num_epochs': 500,
+#     'num_features': 4,
+#     'seq_length': CURRENT_MIN_NUM_SMILE_FRAMES,
+#     'num_hidden': 20,
+#     'num_lstm_layers': 1
+# })
+
 LSTM_config = DotMap({
-    'learning_rate': 1e-4,
-    'batch_size': 10,
-    'num_epochs': 500,
-    'num_features': 4,
-    'seq_length': CURRENT_MIN_NUM_SMILE_FRAMES,
-    'num_hidden': 20,
-    'num_lstm_layers': 1
+    'num_epochs': 250,
+    'batch_size': 64,
+    'num_hidden': 256,
+    'num_lstm_layers': 3,
+    'dropout': 0.75
 })

@@ -6,7 +6,7 @@ import csv
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from config import FACES_FEATURES_DET_FP, FACES_DIR, NUM_FACES_FEATURES, FACES_FEATURES_DIR, FACES_FEATURES_DATA_DIR
+from config import FACES_FEATURES_DET_FP, FACES_DIR, NUM_FACES_FEATURES, FACES_FEATURES_WIDTH_DIR, FACES_FEATURES_DATA_WIDTH_DIR
 from data_prep.utils import get_all_subdirs, get_frame_num, get_filenames_sorted_by_frame_num
 
 f1 = lambda num: f'{num}x'
@@ -29,14 +29,14 @@ def save_landmarks_row(writer, landmarks, frame_number):
 
 
 if __name__ == '__main__':
-    if not os.path.exists(FACES_FEATURES_DIR):
-        os.makedirs(FACES_FEATURES_DIR)
+    if not os.path.exists(FACES_FEATURES_WIDTH_DIR):
+        os.makedirs(FACES_FEATURES_WIDTH_DIR)
 
-    if not os.path.exists(FACES_FEATURES_DATA_DIR):
-        os.makedirs(FACES_FEATURES_DATA_DIR)
+    if not os.path.exists(FACES_FEATURES_DATA_WIDTH_DIR):
+        os.makedirs(FACES_FEATURES_DATA_WIDTH_DIR)
 
     videos_names = get_all_subdirs(FACES_DIR)
-    done_videos_names = get_all_subdirs(FACES_FEATURES_DIR)
+    done_videos_names = get_all_subdirs(FACES_FEATURES_WIDTH_DIR)
     todo_videos_names = [vn for vn in videos_names if vn not in done_videos_names]
 
     print('all videos: ', len(videos_names))
@@ -51,7 +51,7 @@ if __name__ == '__main__':
 
         for video_name in todo_videos_names:
             # create dir for the faces features
-            faces_features_dir = os.path.abspath(os.path.join(os.sep, FACES_FEATURES_DIR, video_name))
+            faces_features_dir = os.path.abspath(os.path.join(os.sep, FACES_FEATURES_WIDTH_DIR, video_name))
             faces_dir = os.path.abspath(os.path.join(os.sep, FACES_DIR, video_name))
             faces_names = get_filenames_sorted_by_frame_num(faces_dir)
             video_imgs_created = 0
@@ -64,7 +64,7 @@ if __name__ == '__main__':
                 dirs_created += 1
                 num_faces += len(faces_names)
 
-                faces_features_data_filepath = os.path.abspath(os.path.join(os.sep, FACES_FEATURES_DATA_DIR,
+                faces_features_data_filepath = os.path.abspath(os.path.join(os.sep, FACES_FEATURES_DATA_WIDTH_DIR,
                                                                             f'{video_name}.csv'))
                 f, _writer = create_ff_data_file_writer(faces_features_data_filepath)
 
