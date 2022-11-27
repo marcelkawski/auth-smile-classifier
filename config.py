@@ -51,6 +51,7 @@ CURRENT_FACES_FEATURES_DATA_TITLES = os.path.abspath(os.path.join(os.sep, ROOT_D
                                                                   f'titles.csv'))
 
 LIGHTNING_LOG_FILEPATH = os.path.abspath(os.path.join(os.sep, ROOT_DIR, FACES_FEATURES_DATA_DIR, 'lightning_logs'))
+CLASSES = [0, 1]
 
 LIPS_CORNER1_IDX = 48
 LIPS_CORNER2_IDX = 54
@@ -59,6 +60,17 @@ FFS_DATA_CONFIG = {
     'mode': 'scaled',  # 'scaled' / 'first'
     'features_nums': [LIPS_CORNER1_IDX, LIPS_CORNER2_IDX]
 }
+
+
+def create_ffs_columns_names():
+    ffs_cols_names = []
+    for feature_num in FFS_DATA_CONFIG['features_nums']:
+        ffs_cols_names.append(f'{feature_num}x')
+        ffs_cols_names.append(f'{feature_num}y')
+    return ffs_cols_names
+
+
+FFS_COLS_NAMES = create_ffs_columns_names()
 
 NUM_FACES_FEATURES = 68
 
