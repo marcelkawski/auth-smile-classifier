@@ -12,7 +12,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 from models.lstm.model import SmileAuthenticityPredictor
 from models.lstm.dataset import FacesFeaturesDataset
 from models._config import nns_config as nns_conf
-from config import FFS_COLS_NAMES, CLASSES
+from config import FFS_COLS_NAMES, CLASSES, CLASSES_STRS
 
 
 def show_conf_matrix(conf_matrix):
@@ -44,7 +44,7 @@ def review_predictions(trainer, test_data):
         predictions.append(prediction.item())
         auths.append(auth.item())
 
-    print(classification_report(auths, predictions, target_names=CLASSES))
+    print(classification_report(auths, predictions, target_names=CLASSES_STRS))
 
     cm = confusion_matrix(auths, predictions)
     cm_df = pd.DataFrame(

@@ -14,7 +14,7 @@ from data_prep.face_aligner import FaceAligner
 def handle_arguments():
     arguments = sys.argv
     if len(arguments) != 2:
-        raise Exception('Invalid number of parameters. This script accepts only ONE parameter - algorithm number.')
+        raise Exception('Invalid number of parameters. This script accepts only ONE parameter - algorithm number.\n')
 
     arguments[1] = int(arguments[1])
 

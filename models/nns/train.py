@@ -31,7 +31,7 @@ def handle_arguments():
     arguments = sys.argv
     if len(arguments) != 2:
         raise Exception('Invalid number of parameters. This script accepts only ONE parameter - neural network '
-                        'architecture number.')
+                        'architecture number.\n')
 
     arguments[1] = int(arguments[1])
 

@@ -35,31 +35,32 @@ FACES_FEATURES_DET_FP = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data_pre
 DESIRED_FACE_WIDTH = 256
 DESIRED_LEFT_EYE_POS = 0.35
 
+LIPS_CORNER1_IDX = 48
+LIPS_CORNER2_IDX = 54
+FFS_DATA_CONFIG = {
+    'features_name': 'lips_corners',
+    # 'mode': 'scaled',  # 'scaled' / 'k_first_in_smile'
+    'mode': 'k_first_in_smile',
+    'features_nums': [LIPS_CORNER1_IDX, LIPS_CORNER2_IDX]
+}
 FACES_FEATURES_WIDTH_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data',
                                                         f'faces_features{DESIRED_FACE_WIDTH}'))
 FACES_FEATURES_DATA_WIDTH_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data',
                                                              f'faces_features_data{DESIRED_FACE_WIDTH}'))
 FACES_FEATURES_DATA_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'faces_features_data'))
-CUR_FFS_DATA_MODE = 'scaled'
-CUR_FFS_DATA_NAME = 'lips_corners'
 CURRENT_FACES_FEATURES_DATA_X = os.path.abspath(os.path.join(os.sep, ROOT_DIR, FACES_FEATURES_DATA_DIR,
-                                                             f'{CUR_FFS_DATA_NAME}_{CUR_FFS_DATA_MODE}_x.csv'))
+                                                             f'{FFS_DATA_CONFIG["features_name"]}_'
+                                                             f'{FFS_DATA_CONFIG["mode"]}_x.csv'))
 CURRENT_FACES_FEATURES_DATA_Y = os.path.abspath(os.path.join(os.sep, ROOT_DIR, FACES_FEATURES_DATA_DIR,
                                                              'authenticity.csv'))
 CURRENT_FACES_FEATURES_DATA_TITLES = os.path.abspath(os.path.join(os.sep, ROOT_DIR, FACES_FEATURES_DATA_DIR,
-                                                                  f'{CUR_FFS_DATA_NAME}_{CUR_FFS_DATA_MODE}_'
+                                                                  f'{FFS_DATA_CONFIG["features_name"]}_'
+                                                                  f'{FFS_DATA_CONFIG["mode"]}_'
                                                                   f'titles.csv'))
 
 LIGHTNING_LOG_FILEPATH = os.path.abspath(os.path.join(os.sep, ROOT_DIR, FACES_FEATURES_DATA_DIR, 'lightning_logs'))
 CLASSES = [0, 1]
-
-LIPS_CORNER1_IDX = 48
-LIPS_CORNER2_IDX = 54
-FFS_DATA_CONFIG = {
-    'features_name': 'lips_corners',
-    'mode': 'scaled',  # 'scaled' / 'first'
-    'features_nums': [LIPS_CORNER1_IDX, LIPS_CORNER2_IDX]
-}
+CLASSES_STRS = ['0', '1']
 
 
 def create_ffs_columns_names():

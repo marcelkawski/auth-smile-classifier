@@ -17,7 +17,7 @@ def train():
     trainer = get_trainer()
 
     trainer.fit(model, datamodule=data_module)
-    trainer.test(datamodule=data_module)
+    trainer.test(datamodule=data_module, ckpt_path='best')
 
     review_predictions(trainer=trainer, test_data=test_data)
 

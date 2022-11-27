@@ -17,6 +17,8 @@ def prepare_data():
     x_train = pd.read_csv(CURRENT_FACES_FEATURES_DATA_X, delimiter=';')
     y_train = pd.read_csv(CURRENT_FACES_FEATURES_DATA_Y, delimiter=';')
 
+    print(f'Learning with data from file: {CURRENT_FACES_FEATURES_DATA_X}\n')
+
     data = []
     for video_name, group in x_train.groupby('video_name'):
         faces_features = group[FFS_COLS_NAMES]
