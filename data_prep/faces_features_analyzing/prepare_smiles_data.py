@@ -77,5 +77,4 @@ def prepare_smiles_data(output_data_filename, mode, features_nums=None):
 
 if __name__ == '__main__':
     # Change if needed.
-    prepare_smiles_data(FFS_DATA_CONFIG['features_name'], mode=FFS_DATA_CONFIG['mode'],
-                        features_nums=FFS_DATA_CONFIG['features_nums'])
+    prepare_smiles_data(FFS_DATA_CONFIG['features_name'], mode=FFS_DATA_CONFIG['mode'])

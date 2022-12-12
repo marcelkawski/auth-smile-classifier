@@ -35,14 +35,17 @@ FACES_FEATURES_DET_FP = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data_pre
 DESIRED_FACE_PHOTO_WIDTH = 256
 DESIRED_LEFT_EYE_POS = 0.35
 
+NUM_FACES_FEATURES = 68
 LIPS_CORNER1_IDX = 48
 LIPS_CORNER2_IDX = 54
 FFS_DATA_CONFIG = {
-    'features_name': 'lips_corners',
-    # 'mode': 'scaled',  # 'scaled' / 'k_first_in_smile' / 'k_first'
-    'mode': 'k_first_in_smile',
+    # 'features_name': 'lips_corners',
+    'features_name': 'all',
+    'mode': 'scaled',  # 'scaled' / 'k_first_in_smile' / 'k_first'
+    # 'mode': 'k_first_in_smile',
     # 'mode': 'k_first',
-    'features_nums': [LIPS_CORNER1_IDX, LIPS_CORNER2_IDX]
+    # 'features_nums': [LIPS_CORNER1_IDX, LIPS_CORNER2_IDX]
+    'features_nums': list(range(NUM_FACES_FEATURES))
 }
 FACES_FEATURES_WIDTH_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data',
                                                         f'faces_features{DESIRED_FACE_PHOTO_WIDTH}'))
@@ -73,8 +76,6 @@ def create_ffs_columns_names():
 
 
 FFS_COLS_NAMES = create_ffs_columns_names()
-
-NUM_FACES_FEATURES = 68
 
 BEG_SMILE_THRESHOLD = 1
 END_SMILE_THRESHOLD = 0.05
