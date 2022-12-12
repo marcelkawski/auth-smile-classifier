@@ -18,7 +18,7 @@ def handle_arguments():
 
     arguments[1] = int(arguments[1])
 
-    if int(arguments[1]) not in [0, 1, 2]:
+    if arguments[1] not in [0, 1, 2]:
         raise Exception('Invalid extracting faces algorithm number.\n'
                         'Options to choose:\n'
                         '0: OpenCV haar-cascade haarcascade_frontalface_alt.xml\n'
@@ -68,7 +68,6 @@ if __name__ == '__main__':
     print('videos to do: ', len(todo_videos_names))
 
     if todo_videos_names:
-        _detector = dlib.get_frontal_face_detector()  # to detect faces
         predictor = dlib.shape_predictor(FACES_FEATURES_DET_FP)  # to detect features to align faces
         fa = FaceAligner(predictor)
 

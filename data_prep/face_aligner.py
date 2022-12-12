@@ -7,19 +7,19 @@ import dlib
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from data_prep.utils import landmarks_to_np, FACIAL_LANDMARKS_IDXS
-from config import DESIRED_FACE_WIDTH
+from config import DESIRED_FACE_PHOTO_WIDTH
 from config import DESIRED_LEFT_EYE_POS as DLAP
 
 
 class FaceAligner:
-    def __init__(self, predictor, desired_left_eye_pos=(DLAP, DLAP), desired_face_width=DESIRED_FACE_WIDTH,
-                 desired_face_height=None):
+    def __init__(self, predictor, desired_left_eye_pos=(DLAP, DLAP), desired_face_photo_width=DESIRED_FACE_PHOTO_WIDTH,
+                 desired_face_photo_height=None):
         self.predictor = predictor
         self.desired_left_eye_pos = desired_left_eye_pos
-        self.desired_face_width = desired_face_width
-        self.desired_face_height = desired_face_height
-        if self.desired_face_height is None:
-            self.desired_face_height = self.desired_face_width
+        self.desired_face_photo_width = desired_face_photo_width
+        self.desired_face_photo_height = desired_face_photo_height
+        if self.desired_face_photo_height is None:
+            self.desired_face_photo_height = self.desired_face_photo_width
 
     def align(self, image, gray, rect):
         if isinstance(rect, np.ndarray) and len(rect) == 4:  # data format for first 2 algorithms extracting faces
@@ -45,19 +45,19 @@ class FaceAligner:
         dist = np.sqrt((dX ** 2) + (dY ** 2))
         desired_right_eye_x = 1.0 - self.desired_left_eye_pos[0]
         desired_dist = desired_right_eye_x - self.desired_left_eye_pos[0]
-        desired_dist *= self.desired_face_width
+        desired_dist *= self.desired_face_photo_width
         scale = desired_dist / dist
 
         eyes_center = (int((left_eye_center[0] + right_eye_center[0]) // 2),
                        int((left_eye_center[1] + right_eye_center[1]) // 2))
         matrix = cv2.getRotationMatrix2D(eyes_center, angle, scale)
-        tX = self.desired_face_width * 0.5
-        tY = self.desired_face_height * self.desired_left_eye_pos[1]
+        tX = self.desired_face_photo_width * 0.5
+        tY = self.desired_face_photo_height * self.desired_left_eye_pos[1]
         matrix[0, 2] += (tX - eyes_center[0])
         matrix[1, 2] += (tY - eyes_center[1])
 
         # apply the affine transformation
-        (w, h) = (self.desired_face_width, self.desired_face_height)
+        (w, h) = (self.desired_face_photo_width, self.desired_face_photo_height)
         output = cv2.warpAffine(image, matrix, (w, h), flags=cv2.INTER_CUBIC)
 
         return output

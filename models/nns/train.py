@@ -35,7 +35,7 @@ def handle_arguments():
 
     arguments[1] = int(arguments[1])
 
-    if int(arguments[1]) not in [0, 1, 2]:
+    if arguments[1] not in [0, 1, 2]:
         raise Exception('Invalid neural network architecture number.\n'
                         'Options to choose:\n'
                         '--------------------------------------------------\n'

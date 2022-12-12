@@ -32,21 +32,22 @@ FACES_FEATURES_DET_FP = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data_pre
                                                      'shape_predictor_68_face_landmarks.dat'))
 
 # -----EXTRACTING AND NORMALIZING FACES-----
-DESIRED_FACE_WIDTH = 256
+DESIRED_FACE_PHOTO_WIDTH = 256
 DESIRED_LEFT_EYE_POS = 0.35
 
 LIPS_CORNER1_IDX = 48
 LIPS_CORNER2_IDX = 54
 FFS_DATA_CONFIG = {
     'features_name': 'lips_corners',
-    # 'mode': 'scaled',  # 'scaled' / 'k_first_in_smile'
+    # 'mode': 'scaled',  # 'scaled' / 'k_first_in_smile' / 'k_first'
     'mode': 'k_first_in_smile',
+    # 'mode': 'k_first',
     'features_nums': [LIPS_CORNER1_IDX, LIPS_CORNER2_IDX]
 }
 FACES_FEATURES_WIDTH_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data',
-                                                        f'faces_features{DESIRED_FACE_WIDTH}'))
+                                                        f'faces_features{DESIRED_FACE_PHOTO_WIDTH}'))
 FACES_FEATURES_DATA_WIDTH_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data',
-                                                             f'faces_features_data{DESIRED_FACE_WIDTH}'))
+                                                             f'faces_features_data{DESIRED_FACE_PHOTO_WIDTH}'))
 FACES_FEATURES_DATA_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'faces_features_data'))
 CURRENT_FACES_FEATURES_DATA_X = os.path.abspath(os.path.join(os.sep, ROOT_DIR, FACES_FEATURES_DATA_DIR,
                                                              f'{FFS_DATA_CONFIG["features_name"]}_'
