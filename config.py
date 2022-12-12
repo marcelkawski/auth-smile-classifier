@@ -83,3 +83,4 @@ MIN_DIFF_IN_RISE_SMILE_BEG = 0.01
 SMILE_DURATION_MIN_RATIO = 0.48  # minimal <number_of_smile_frames>/<number_of_all_frames> ratio - If less than that
 # - take from the beginning till the end
 CURRENT_MIN_NUM_SMILE_FRAMES = 39  # number of frames of the shortest smile
+SMILE_LABELS = ['zamierzony', 'spontaniczny']
