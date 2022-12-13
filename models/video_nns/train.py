@@ -145,7 +145,7 @@ def get_model_params(model_num, train_data, val_data, test_data, device):
            training_proc_data
 
 
-def train_loop(model, train_loader, optimizer, loss_func, device, num_model):
+def train_loop(model, train_loader, optimizer, loss_func, device):
     model.train()
     correct, total = 0, 0
     train_loss = 0.0
@@ -170,7 +170,7 @@ def train_loop(model, train_loader, optimizer, loss_func, device, num_model):
     return train_loss, train_accuracy
 
 
-def val_loop(model, val_loader, loss_func, device, num_model):
+def val_loop(model, val_loader, loss_func, device):
     model.eval()
     correct, total = 0, 0
     val_loss = 0.0
@@ -192,7 +192,7 @@ def val_loop(model, val_loader, loss_func, device, num_model):
     return val_loss, val_accuracy
 
 
-def test_loop(model, best_model_dict, test_loader, device, num_model):
+def test_loop(model, best_model_dict, test_loader, device):
     model.eval()
     model.load_state_dict(best_model_dict)  # tests on the best model
     with torch.no_grad():
@@ -241,9 +241,9 @@ def train(date_str):
             lr = get_lr(optimizer)
 
             # training
-            train_loss, train_accuracy = train_loop(model, train_loader, optimizer, loss_func, device, num_model)
+            train_loss, train_accuracy = train_loop(model, train_loader, optimizer, loss_func, device)
             # validating
-            val_loss, val_accuracy = val_loop(model, val_loader, loss_func, device, num_model)
+            val_loss, val_accuracy = val_loop(model, val_loader, loss_func, device)
 
             if val_loss < best_loss:
                 best_model_dict = deepcopy(model.state_dict())
@@ -276,7 +276,7 @@ def train(date_str):
                 lr_scheduler.step(val_loss)
 
         # testing
-        test_accuracy = test_loop(model, best_model_dict, test_loader, device, num_model)
+        test_accuracy = test_loop(model, best_model_dict, test_loader, device)
         print(f'tests accuracy of the model ({model_name}): {test_accuracy} %')
 
         save_best_model(model_name, best_model_dict, date_str)
@@ -326,10 +326,10 @@ def plot_training_values(model_name, x_values, train_values, val_values, train_l
 
 
 if __name__ == '__main__':
-    date_str = get_current_time_str()
-    mn, tl, vl, ta, va, el, st = train(date_str)
+    d_str = get_current_time_str()
+    mn, tl, vl, ta, va, el, st = train(d_str)
     plot_training_values(mn, x_values=el, train_values=tl, val_values=vl, train_label='training dataset',
-                         val_label='validation dataset', label='loss', date_str=date_str, loc='lower left', step=st)
+                         val_label='validation dataset', label='loss', date_str=d_str, loc='lower left', step=st)
     plot_training_values(mn, x_values=el, train_values=ta, val_values=va, train_label='training dataset',
-                         val_label='validation dataset', label='accuracy', date_str=date_str, loc='upper left',
+                         val_label='validation dataset', label='accuracy', date_str=d_str, loc='upper left',
                          step=st)

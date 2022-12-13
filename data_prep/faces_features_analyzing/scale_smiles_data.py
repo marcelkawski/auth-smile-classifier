@@ -11,10 +11,10 @@ from data_prep.utils import get_all_filenames
 
 
 def scale_smiles_data(scaled_data_filename, features_nums=None):
-    # if os.path.exists(FACES_FEATURES_SCALED_DATA_DIR) and os.listdir(FACES_FEATURES_SCALED_DATA_DIR):
-    #     # Exists and is not empty.:
-    #     raise Exception('Scaled faces features data directory is not empty so the program supposes that the faces '
-    #                     'have been already extracted.\n')
+    if os.path.exists(FACES_FEATURES_DATA_DIR) and os.listdir(FACES_FEATURES_DATA_DIR):
+        # Exists and is not empty.:
+        raise Exception('Scaled faces features data directory is not empty so the program supposes that the faces '
+                        'have been already extracted.\n')
 
     if not os.path.exists(FACES_FEATURES_DATA_DIR):
         os.makedirs(FACES_FEATURES_DATA_DIR)
@@ -64,7 +64,7 @@ def scale_smiles_data(scaled_data_filename, features_nums=None):
 
 if __name__ == '__main__':
     # Change if needed.
-    sc_data_filename = 'lips_corners2'
+    sc_data_filename = 'lips_corners'
     f_nums = [48, 54]
 
     scale_smiles_data(sc_data_filename, features_nums=f_nums)
