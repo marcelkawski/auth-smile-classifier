@@ -49,7 +49,7 @@ CNN3D_config = DotMap({
 })
 
 LSTM_config = DotMap({
-    'num_epochs': 500,
+    'num_epochs': 300,
     'batch_size': 64,
     'num_hidden': 256,
     'num_lstm_layers': 3,

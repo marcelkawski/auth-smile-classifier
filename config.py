@@ -38,13 +38,16 @@ DESIRED_LEFT_EYE_POS = 0.35
 NUM_FACES_FEATURES = 68
 LIPS_CORNER1_IDX = 48
 LIPS_CORNER2_IDX = 54
+NOSE_TOP_IDX = 33
+FFS_DATA_ALT_MODES = ['lips_corners_from_nose_dist']
 FFS_DATA_CONFIG = {
-    'features_name': 'lips_corners',
+    'features_name': 'lips_corners_from_nose_dist',
+    # 'features_name': 'lips_corners',
     # 'features_name': 'all',
     # 'mode': 'scaled',  # 'scaled' / 'k_first_in_smile' / 'k_first'
     # 'mode': 'k_first_in_smile',
     'mode': 'k_first',
-    'features_nums': [LIPS_CORNER1_IDX, LIPS_CORNER2_IDX]
+    # 'features_nums': [LIPS_CORNER1_IDX, LIPS_CORNER2_IDX]
     # 'features_nums': list(range(NUM_FACES_FEATURES))
 }
 FACES_FEATURES_WIDTH_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data',
@@ -69,9 +72,12 @@ CLASSES_STRS = ['0', '1']
 
 def create_ffs_columns_names():
     ffs_cols_names = []
-    for feature_num in FFS_DATA_CONFIG['features_nums']:
-        ffs_cols_names.append(f'{feature_num}x')
-        ffs_cols_names.append(f'{feature_num}y')
+    if 'features_nums' in FFS_DATA_CONFIG:
+        for feature_num in FFS_DATA_CONFIG['features_nums']:
+            ffs_cols_names.append(f'{feature_num}x')
+            ffs_cols_names.append(f'{feature_num}y')
+    else:
+        ffs_cols_names.append(FFS_DATA_CONFIG['features_name'])
     return ffs_cols_names
 
 
