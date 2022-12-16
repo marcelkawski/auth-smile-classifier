@@ -5,7 +5,7 @@ import re
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config import FACES_DIR
-from data_prep.utils import get_all_subdirs, get_all_filenames
+from data_prep.data_prep_utils import get_all_subdirs, get_all_filenames
 
 
 def rename_file(path, old_name, new_name):

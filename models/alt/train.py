@@ -115,4 +115,4 @@ def get_av_accuracy(data, algorithm_num, k):
 if __name__ == '__main__':
     _, alg_num = handle_arguments()
     d = read_data()
-    get_av_accuracy(data=d, algorithm_num=alg_num, k=1)
+    get_av_accuracy(data=d, algorithm_num=alg_num, k=10)

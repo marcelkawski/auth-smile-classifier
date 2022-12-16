@@ -15,6 +15,6 @@ def read_learning_data_file(file_name):
 
 
 if __name__ == '__main__':
-    ld = read_learning_data_file('CNN+LSTM_NN-20221108-212129.pkl')
+    ld = read_learning_data_file('3D_CNN_NN-20221106-224716.pkl')
     for d in ld:
         print(d)

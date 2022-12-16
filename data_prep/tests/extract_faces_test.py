@@ -3,7 +3,7 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from data_prep.utils import get_all_filenames, get_all_subdirs, get_frame_num, get_filenames_sorted_by_frame_num
+from data_prep.data_prep_utils import get_all_filenames, get_all_subdirs, get_frame_num, get_filenames_sorted_by_frame_num
 from config import FRAMES_DIR, FACES_DIR
 
 
@@ -28,6 +28,17 @@ def test_consecutive_faces_frames_nums():
     faces_dirs = get_all_subdirs(FACES_DIR)
     for face_dirname in faces_dirs:
         face_dir = os.path.abspath(os.path.join(os.sep, FACES_DIR, face_dirname))
+        # sorted by frame number
+        faces_files = get_filenames_sorted_by_frame_num(face_dir)
+        for idx, name in enumerate(faces_files):
+            frame_num = get_frame_num(name)
+            assert frame_num == idx
+
+
+def test_consecutive_frames_nums():
+    faces_dirs = get_all_subdirs(FRAMES_DIR)
+    for face_dirname in faces_dirs:
+        face_dir = os.path.abspath(os.path.join(os.sep, FRAMES_DIR, face_dirname))
         # sorted by frame number
         faces_files = get_filenames_sorted_by_frame_num(face_dir)
         for idx, name in enumerate(faces_files):

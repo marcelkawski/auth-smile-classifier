@@ -6,7 +6,7 @@ import dlib
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from data_prep.utils import landmarks_to_np, FACIAL_LANDMARKS_IDXS
+from data_prep.data_prep_utils import landmarks_to_np, FACIAL_LANDMARKS_IDXS
 from config import DESIRED_FACE_PHOTO_WIDTH
 from config import DESIRED_LEFT_EYE_POS as DLAP
 

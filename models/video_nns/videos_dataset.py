@@ -8,7 +8,7 @@ from torch.utils.data import Dataset
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from config import FACES_SAME_LEN_DIR
-from data_prep.utils import get_filenames_sorted_by_frame_num
+from data_prep.data_prep_utils import get_filenames_sorted_by_frame_num
 
 
 class VideosDataset(Dataset):

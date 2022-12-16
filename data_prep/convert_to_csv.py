@@ -4,7 +4,7 @@ import pandas as pd
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from data_prep.utils import AUTH_SMILE_ENC_DICT
+from data_prep.data_prep_utils import AUTH_SMILE_ENC_DICT
 from config import DATA_DIR
 
 if __name__ == "__main__":

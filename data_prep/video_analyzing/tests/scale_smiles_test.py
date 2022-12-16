@@ -5,7 +5,7 @@ import json
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 
 from config import FACES_SAME_LEN_DIR, COMPLETE_SMILES_DATA_FILE_PATH, CURRENT_MIN_NUM_SMILE_FRAMES
-from data_prep.utils import get_all_filenames, get_all_subdirs
+from data_prep.data_prep_utils import get_all_filenames, get_all_subdirs
 
 
 def test_num_dirs():

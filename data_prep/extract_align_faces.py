@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config import FRAMES_DIR, FACES_DIR, NEW_FACES_DIR, FACES_FEATURES_DET_FP, FACES_DET_OPENCV_MODEL1_FP, \
     FACES_DET_OPENCV_MODEL2_FP
-from data_prep.utils import get_all_subdirs, get_all_filenames
+from data_prep.data_prep_utils import get_all_subdirs, get_all_filenames
 from data_prep.face_aligner import FaceAligner
 
 

@@ -4,7 +4,7 @@ import pandas as pd
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from data_prep.utils import get_all_filenames, get_all_subdirs
+from data_prep.data_prep_utils import get_all_filenames, get_all_subdirs
 from config import FACES_DIR, FACES_FEATURES_WIDTH_DIR, FACES_FEATURES_DATA_WIDTH_DIR
 
 

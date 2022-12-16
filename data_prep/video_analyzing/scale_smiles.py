@@ -6,7 +6,7 @@ from fraction import Fraction
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from config import SMILES_DATA_FILE_PATH, SMILES_DATA_DIR
-from data_prep.utils import save_dict_to_json_file
+from data_prep.data_prep_utils import save_dict_to_json_file
 
 
 def scale_frames(orig_len, req_len, beg_frame_num):

@@ -5,7 +5,7 @@ import cv2
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config import VIDEOS_DIR, FRAMES_DIR
-from data_prep.utils import get_all_filenames
+from data_prep.data_prep_utils import get_all_filenames
 
 if __name__ == '__main__':
     if os.path.exists(FRAMES_DIR) and os.listdir(FRAMES_DIR):  # Exists and is not empty.:

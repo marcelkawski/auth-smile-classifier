@@ -22,7 +22,7 @@ from models.video_nns.video_cnn_lstm import VideoCNNLSTM
 from models.video_nns.dataset import prepare_datasets
 from config import NNS_WEIGHTS_DIR, NNS_PLOTS_DIR, NNS_LEARNING_DATA_DIR
 from utils import get_current_time_str
-from data_prep.utils import save_dict_to_json_file
+from data_prep.data_prep_utils import save_dict_to_json_file
 
 
 def handle_arguments():

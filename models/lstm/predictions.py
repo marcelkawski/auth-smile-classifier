@@ -19,8 +19,9 @@ def show_conf_matrix(conf_matrix):
     hmap = sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues')
     hmap.yaxis.set_ticklabels(hmap.yaxis.get_ticklabels(), rotation=0, ha='right')
     hmap.xaxis.set_ticklabels(hmap.xaxis.get_ticklabels(), rotation=0, ha='right')
-    plt.ylabel('True authenticity')
-    plt.xlabel('Predicted authenticity')
+    plt.title('Macierz błędów sieci LSTM')
+    plt.ylabel('rzeczywista autentyczność')
+    plt.xlabel('przewidziana autentyczność')
     plt.show()
 
 

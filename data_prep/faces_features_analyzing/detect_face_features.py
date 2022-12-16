@@ -8,7 +8,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 
 from config import FACES_FEATURES_DET_FP, FACES_DIR, NUM_FACES_FEATURES, FACES_FEATURES_WIDTH_DIR, \
     FACES_FEATURES_DATA_WIDTH_DIR
-from data_prep.utils import get_all_subdirs, get_frame_num, get_filenames_sorted_by_frame_num
+from data_prep.data_prep_utils import get_all_subdirs, get_frame_num, get_filenames_sorted_by_frame_num
 
 f1 = lambda num: f'{num}x'
 f2 = lambda num: f'{num}y'

@@ -11,7 +11,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 from config import FACES_FEATURES_DET_FP, FACES_DIR, LIPS_CORNER1_IDX, LIPS_CORNER2_IDX, BEG_SMILE_THRESHOLD, \
     END_SMILE_THRESHOLD, SMILES_DATA_DIR, SMILES_DATA_FILE_PATH, NUM_FRAMES_RISE_SMILE_BEG, \
     MIN_DIFF_IN_RISE_SMILE_BEG, SMILE_DURATION_MIN_RATIO
-from data_prep.utils import get_all_subdirs, get_frame_num, get_filenames_sorted_by_frame_num, save_dict_to_json_file
+from data_prep.data_prep_utils import get_all_subdirs, get_frame_num, get_filenames_sorted_by_frame_num, save_dict_to_json_file
 
 
 def show_smile_plot(data):

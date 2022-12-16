@@ -5,7 +5,7 @@ import pandas as pd
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from config import FACES_FEATURES_DATA_WIDTH_DIR, CURRENT_FACES_FEATURES_DATA_Y
-from data_prep.utils import get_all_subdirs
+from data_prep.data_prep_utils import get_all_subdirs
 
 
 def check_incorr_detections():

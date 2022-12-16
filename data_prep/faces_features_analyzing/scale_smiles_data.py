@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 
 from config import FACES_FEATURES_DATA_DIR, FACES_FEATURES_DATA_WIDTH_DIR, COMPLETE_SMILES_DATA_FILE_PATH, \
     VIDEOS_DATA_FILEPATH
-from data_prep.utils import get_all_filenames
+from data_prep.data_prep_utils import get_all_filenames
 
 
 def scale_smiles_data(scaled_data_filename, features_nums=None):
