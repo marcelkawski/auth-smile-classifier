@@ -39,14 +39,15 @@ NUM_FACES_FEATURES = 68
 LIPS_CORNER1_IDX = 48
 LIPS_CORNER2_IDX = 54
 NOSE_TOP_IDX = 33
-FFS_DATA_ALT_MODES = ['lips_corners_from_nose_dist']
+FFS_DATA_ALT_MODES = ['lips_corners_from_nose_dist', 'lips_corners_from_nose_angle']
 FFS_DATA_CONFIG = {
-    'features_name': 'lips_corners_from_nose_dist',
+    'features_name': 'lips_corners_from_nose_angle',
+    # 'features_name': 'lips_corners_from_nose_dist',
     # 'features_name': 'lips_corners',
     # 'features_name': 'all',
     # 'mode': 'scaled',  # 'scaled' / 'k_first_in_smile' / 'k_first'
-    # 'mode': 'k_first_in_smile',
-    'mode': 'k_first',
+    'mode': 'k_first_in_smile',
+    # 'mode': 'k_first',
     # 'features_nums': [LIPS_CORNER1_IDX, LIPS_CORNER2_IDX]
     # 'features_nums': list(range(NUM_FACES_FEATURES))
 }
@@ -64,6 +65,7 @@ CURRENT_FACES_FEATURES_DATA_TITLES = os.path.abspath(os.path.join(os.sep, ROOT_D
                                                                   f'{FFS_DATA_CONFIG["features_name"]}_'
                                                                   f'{FFS_DATA_CONFIG["mode"]}_'
                                                                   f'titles.csv'))
+FACES_FEATURES_DRAWINGS_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'faces_features_drawings'))
 
 LIGHTNING_LOG_FILEPATH = os.path.abspath(os.path.join(os.sep, ROOT_DIR, FACES_FEATURES_DATA_DIR, 'lightning_logs'))
 CLASSES = [0, 1]

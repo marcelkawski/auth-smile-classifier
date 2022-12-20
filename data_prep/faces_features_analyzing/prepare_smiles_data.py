@@ -9,8 +9,18 @@ pd.options.mode.chained_assignment = None
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from config import FACES_FEATURES_DATA_DIR, FACES_FEATURES_DATA_WIDTH_DIR, COMPLETE_SMILES_DATA_FILE_PATH, \
-    FFS_DATA_CONFIG, FFS_DATA_ALT_MODES, NOSE_TOP_IDX, LIPS_CORNER1_IDX, LIPS_CORNER2_IDX
+    FFS_DATA_CONFIG, FFS_DATA_ALT_MODES, NOSE_TOP_IDX, LIPS_CORNER1_IDX, LIPS_CORNER2_IDX, DESIRED_FACE_PHOTO_WIDTH
 from data_prep.data_prep_utils import get_all_filenames
+
+
+def unit_vector(vector):
+    return vector / np.linalg.norm(vector)
+
+
+def angle_between(v1, v2):
+    v1_u = unit_vector(v1)
+    v2_u = unit_vector(v2)
+    return np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0))
 
 
 def prepare_smiles_data(features_name, mode, features_nums=None):
@@ -65,27 +75,35 @@ def prepare_smiles_data(features_name, mode, features_nums=None):
             selected_data_x = selected_data_x[selected_columns]
         elif features_name in FFS_DATA_ALT_MODES:  # taking not only raw faces features points
             left_lips_corner_x = selected_data_x[f'{LIPS_CORNER1_IDX}x']
-            left_lips_corner_y = selected_data_x[f'{LIPS_CORNER1_IDX}y']
+            left_lips_corner_y = DESIRED_FACE_PHOTO_WIDTH - selected_data_x[f'{LIPS_CORNER1_IDX}y']
 
             right_lips_corner_x = selected_data_x[f'{LIPS_CORNER2_IDX}x']
-            right_lips_corner_y = selected_data_x[f'{LIPS_CORNER2_IDX}y']
+            right_lips_corner_y = DESIRED_FACE_PHOTO_WIDTH - selected_data_x[f'{LIPS_CORNER2_IDX}y']
 
             nose_top_x = selected_data_x[f'{NOSE_TOP_IDX}x']
-            nose_top_y = selected_data_x[f'{NOSE_TOP_IDX}y']
+            nose_top_y = DESIRED_FACE_PHOTO_WIDTH - selected_data_x[f'{NOSE_TOP_IDX}y']
 
-            lc_dx = nose_top_x - left_lips_corner_x
-            lc_dy = nose_top_y - left_lips_corner_y
-            lc_dist = np.sqrt((lc_dx ** 2) + (lc_dy ** 2))
+            lc_dx = left_lips_corner_x - nose_top_x
+            lc_dy = left_lips_corner_y - nose_top_y
 
             rc_dx = right_lips_corner_x - nose_top_x
             rc_dy = right_lips_corner_y - nose_top_y
-            rc_dist = np.sqrt((rc_dx ** 2) + (rc_dy ** 2))
 
-            av_dist = (lc_dist + rc_dist) / 2
-            av_dist /= av_dist.iloc[0]
-
-            selected_data_x[features_name] = av_dist
-            selected_data_x = pd.DataFrame(selected_data_x[features_name])
+            if features_name == 'lips_corners_from_nose_dist':
+                lc_dist = np.sqrt((lc_dx ** 2) + (lc_dy ** 2))
+                rc_dist = np.sqrt((rc_dx ** 2) + (rc_dy ** 2))
+                av_dist = (lc_dist + rc_dist) / 2
+                av_dist /= av_dist.iloc[0]
+                selected_data_x[features_name] = av_dist
+                selected_data_x = pd.DataFrame(selected_data_x[features_name])
+            elif features_name == 'lips_corners_from_nose_angle':
+                angles = []
+                for i in range(len(lc_dx)):
+                    v1 = lc_dx.iloc[i], lc_dy.iloc[i]
+                    v2 = rc_dx.iloc[i], rc_dy.iloc[i]
+                    angles.append(angle_between(v1, v2))
+                angles = list(map(lambda el: el/angles[0], angles))
+                selected_data_x = pd.DataFrame(angles, columns=[features_name])
 
         selected_data_x['video_name'] = video_name
         # set 'video_name' columns as first
