@@ -6,12 +6,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import json
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config import FACES_FEATURES_DET_FP, FACES_DIR, LIPS_CORNER1_IDX, LIPS_CORNER2_IDX, BEG_SMILE_THRESHOLD, \
     END_SMILE_THRESHOLD, SMILES_DATA_DIR, SMILES_DATA_FILE_PATH, NUM_FRAMES_RISE_SMILE_BEG, \
     MIN_DIFF_IN_RISE_SMILE_BEG, SMILE_DURATION_MIN_RATIO
-from data_prep.data_prep_utils import get_all_subdirs, get_frame_num, get_filenames_sorted_by_frame_num, save_dict_to_json_file
+from data_prep.data_prep_utils import get_all_subdirs, get_frame_num, get_filenames_sorted_by_frame_num, \
+    save_dict_to_json_file
 
 
 def show_smile_plot(data):
@@ -79,8 +80,8 @@ def save_smiles_data(show_plot=False, print_values=False, print_video_summary=Fa
 
                     if first_dist is None:
                         first_dist = dist
-                    else:
-                        curr_diff = abs(dist - first_dist)
+
+                    curr_diff = abs(dist - first_dist)
 
                     if print_values is True:
                         print(f'Frame num.: {_frame_number}\tdiff.: {curr_diff}')

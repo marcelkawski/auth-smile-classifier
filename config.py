@@ -39,17 +39,32 @@ NUM_FACES_FEATURES = 68
 LIPS_CORNER1_IDX = 48
 LIPS_CORNER2_IDX = 54
 NOSE_TOP_IDX = 33
-FFS_DATA_ALT_MODES = ['lips_corners_from_nose_dist', 'lips_corners_from_nose_angle']
+
+
+def create_face_features_nums():
+    eyebrows = list(range(17, 27))
+    eyes = list(range(36, 48))
+    nose = list(range(27, 36))
+    mouth = list(range(48, 68))
+
+    all_points = sorted(eyebrows + eyes + nose + mouth)
+    return all_points
+
+
+FFS_DATA_ALT_MODES = ['lips_corners_from_nose_dist', 'lips_corners_from_nose_angle', 'lips_corners_dist']
 FFS_DATA_CONFIG = {
-    'features_name': 'lips_corners_from_nose_angle',
+    'features_name': 'lips_corners_dist',
+    # 'features_name': 'lips_corners_from_nose_angle',
     # 'features_name': 'lips_corners_from_nose_dist',
     # 'features_name': 'lips_corners',
+    # 'features_name': 'face',
     # 'features_name': 'all',
     # 'mode': 'scaled',  # 'scaled' / 'k_first_in_smile' / 'k_first'
     'mode': 'k_first_in_smile',
     # 'mode': 'k_first',
     # 'features_nums': [LIPS_CORNER1_IDX, LIPS_CORNER2_IDX]
     # 'features_nums': list(range(NUM_FACES_FEATURES))
+    # 'features_nums': create_face_features_nums()
 }
 FACES_FEATURES_WIDTH_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data',
                                                         f'faces_features{DESIRED_FACE_PHOTO_WIDTH}'))

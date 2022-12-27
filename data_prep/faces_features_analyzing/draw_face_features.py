@@ -13,9 +13,15 @@ f2 = lambda num: f'{num}y'
 header = ['frame_number'] + [f(i) for i in range(NUM_FACES_FEATURES) for f in (f1, f2)]
 
 
-if __name__ == '__main__':
+def draw_features(mode):
     videos_names = ['001_deliberate_smile_2.mp4']
-    features_nums_to_circle = [48, 54, 33]
+
+    if mode == 'nose_top':
+        features_nums_to_circle = [48, 54, 33]
+    elif mode == 'corners_dist':
+        features_nums_to_circle = [48, 54]
+    else:
+        raise Exception('Incorrect drawing faces features mode given.')
 
     detector = dlib.get_frontal_face_detector()
 
@@ -53,8 +59,11 @@ if __name__ == '__main__':
                         ys.append(_y)
                         cv2.circle(img=img, center=(_x, _y), radius=5, color=(0, 255, 0), thickness=-1)
 
-                    cv2.line(img=img, pt1=(xs[0], ys[0]), pt2=(xs[2], ys[2]), color=(0, 0, 255), thickness=2)
-                    cv2.line(img=img, pt1=(xs[1], ys[1]), pt2=(xs[2], ys[2]), color=(0, 0, 255), thickness=2)
+                    if mode == 'nose_top':
+                        cv2.line(img=img, pt1=(xs[0], ys[0]), pt2=(xs[2], ys[2]), color=(0, 0, 255), thickness=2)
+                        cv2.line(img=img, pt1=(xs[1], ys[1]), pt2=(xs[2], ys[2]), color=(0, 0, 255), thickness=2)
+                    elif mode == 'corners_dist':
+                        cv2.line(img=img, pt1=(xs[0], ys[0]), pt2=(xs[1], ys[1]), color=(0, 0, 255), thickness=2)
 
                 # save an image with marked face features
                 os.chdir(faces_features_dir)
@@ -64,3 +73,8 @@ if __name__ == '__main__':
             print(f'Number of drawings created: {video_imgs_created}\n')
 
     print('**********************************************\nDone!\n')
+
+
+if __name__ == '__main__':
+    draw_features(mode='nose_top')
+    # draw_features(mode='corners_dist')
