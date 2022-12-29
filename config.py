@@ -43,8 +43,8 @@ NOSE_TOP_IDX = 33
 
 def create_face_features_nums():
     eyebrows = list(range(17, 27))
-    eyes = list(range(36, 48))
     nose = list(range(27, 36))
+    eyes = list(range(36, 48))
     mouth = list(range(48, 68))
 
     all_points = sorted(eyebrows + eyes + nose + mouth)
@@ -60,9 +60,9 @@ FFS_DATA_CONFIG = {
     # 'features_name': 'face',
     # 'features_name': 'all',
     # 'mode': 'scaled',  # 'scaled' / 'k_first_in_smile' / 'k_first'
-    'mode': 'k_first_in_smile',
-    # 'mode': 'k_first',
-    # 'features_nums': [LIPS_CORNER1_IDX, LIPS_CORNER2_IDX]
+    # 'mode': 'k_first_in_smile',
+    'mode': 'k_first',
+    'features_nums': [LIPS_CORNER1_IDX, LIPS_CORNER2_IDX]
     # 'features_nums': list(range(NUM_FACES_FEATURES))
     # 'features_nums': create_face_features_nums()
 }
