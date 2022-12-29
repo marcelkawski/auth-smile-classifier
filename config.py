@@ -53,16 +53,17 @@ def create_face_features_nums():
 
 FFS_DATA_ALT_MODES = ['lips_corners_from_nose_dist', 'lips_corners_from_nose_angle', 'lips_corners_dist']
 FFS_DATA_CONFIG = {
-    'features_name': 'lips_corners_dist',
+    # 'features_name': 'lips_corners_dist',
     # 'features_name': 'lips_corners_from_nose_angle',
-    # 'features_name': 'lips_corners_from_nose_dist',
+    'features_name': 'lips_corners_from_nose_dist',
     # 'features_name': 'lips_corners',
     # 'features_name': 'face',
     # 'features_name': 'all',
     # 'mode': 'scaled',  # 'scaled' / 'k_first_in_smile' / 'k_first'
     # 'mode': 'k_first_in_smile',
-    'mode': 'k_first',
-    'features_nums': [LIPS_CORNER1_IDX, LIPS_CORNER2_IDX]
+    # 'mode': 'k_first',
+    'mode': 'all',
+    # 'features_nums': [LIPS_CORNER1_IDX, LIPS_CORNER2_IDX]
     # 'features_nums': list(range(NUM_FACES_FEATURES))
     # 'features_nums': create_face_features_nums()
 }
@@ -81,6 +82,9 @@ CURRENT_FACES_FEATURES_DATA_TITLES = os.path.abspath(os.path.join(os.sep, ROOT_D
                                                                   f'{FFS_DATA_CONFIG["mode"]}_'
                                                                   f'titles.csv'))
 FACES_FEATURES_DRAWINGS_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'faces_features_drawings'))
+SMILES_DATA_PLOTS_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data', 'smiles_data_plots'))
+CURRENT_SMILES_DATA_PLOTS_DIR = os.path.abspath(os.path.join(os.sep, SMILES_DATA_PLOTS_DIR,
+                                                             FFS_DATA_CONFIG['features_name']))
 
 LIGHTNING_LOG_FILEPATH = os.path.abspath(os.path.join(os.sep, ROOT_DIR, FACES_FEATURES_DATA_DIR, 'lightning_logs'))
 CLASSES = [0, 1]
@@ -108,3 +112,4 @@ SMILE_DURATION_MIN_RATIO = 0.48  # minimal <number_of_smile_frames>/<number_of_a
 # - take from the beginning till the end
 CURRENT_MIN_NUM_SMILE_FRAMES = 39  # number of frames of the shortest smile
 SMILE_LABELS = ['zamierzony', 'spontaniczny']
+SMILE_ORIGINAL_LABELS = ['deliberate', 'spontaneous']

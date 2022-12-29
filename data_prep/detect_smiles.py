@@ -25,7 +25,6 @@ def show_smile_plot(data):
     plt.title('Zmiany odległości kącików ust od wartości początkowej w kolejnych klatkach')
     plt.xlabel('numer klatki')
     plt.ylabel('zmiana odległości kącików ust')
-
     plt.rcParams["figure.figsize"] = (200, 3)
 
     plt.show()
@@ -206,4 +205,4 @@ def save_smiles_data(show_plot=False, print_values=False, print_video_summary=Fa
 
 
 if __name__ == '__main__':
-    save_smiles_data()
+    save_smiles_data(show_plot=True)

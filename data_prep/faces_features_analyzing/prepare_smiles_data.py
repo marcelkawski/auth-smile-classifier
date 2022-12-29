@@ -3,13 +3,15 @@ import sys
 import json
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 pd.options.mode.chained_assignment = None
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from config import FACES_FEATURES_DATA_DIR, FACES_FEATURES_DATA_WIDTH_DIR, COMPLETE_SMILES_DATA_FILE_PATH, \
-    FFS_DATA_CONFIG, FFS_DATA_ALT_MODES, NOSE_TOP_IDX, LIPS_CORNER1_IDX, LIPS_CORNER2_IDX, DESIRED_FACE_PHOTO_WIDTH
+    FFS_DATA_CONFIG, FFS_DATA_ALT_MODES, NOSE_TOP_IDX, LIPS_CORNER1_IDX, LIPS_CORNER2_IDX, DESIRED_FACE_PHOTO_WIDTH, \
+    CURRENT_SMILES_DATA_PLOTS_DIR, SMILE_ORIGINAL_LABELS
 from data_prep.data_prep_utils import get_all_filenames
 
 
@@ -34,12 +36,41 @@ def calculate_dx_dy(left_lips_corner_x, left_lips_corner_y, right_lips_corner_x,
     return lc_dx, lc_dy, rc_dx, rc_dy
 
 
-def prepare_smiles_data(features_name, mode, features_nums=None):
+def plot_smiles_data(values, frames, features_name, smile_label, plot_name):
+    plt.figure(figsize=(15, 7))
+    plt.plot(frames, values, '-o')
+
+    if features_name == 'lips_corners_dist':
+        title = 'Odległości kącików ust od siebie w kolejnych klatkach filmu w stosunku do wartości w pierwszej ' \
+                'klatce filmu'
+        ylabel = 'odl. kącików ust od siebie w st. do wart. w pierwszej kl. filmu'
+    elif features_name == 'lips_corners_from_nose_angle':
+        title = 'Kąt pomiędzy kącikami ust a środkiem nosa w kolejnych klatkach filmu w stosunku do wartości w ' \
+                'pierwszej klatce filmu'
+        ylabel = 'kąt pom. kącikami ust a śr. nosa w st. do wart. w pierwszej kl. filmu'
+    elif features_name == 'lips_corners_from_nose_dist':
+        title = 'Średnia odległość kącików ust od środka nosa w kolejnych klatkach filmu w stosunku do wartości w ' \
+                'pierwszej klatce filmu'
+        ylabel = 'śr. odl. kącików ust od śr. nosa w st. do wart. w pierwszej kl. filmu'
+    else:
+        raise Exception('Incorrect features name.')
+
+    plt.title(title)
+    plt.xlabel('numer klatki')
+    plt.ylabel(ylabel)
+
+    plot_dir = os.path.abspath(os.path.join(os.sep, CURRENT_SMILES_DATA_PLOTS_DIR, smile_label, f'{plot_name}.png'))
+    plt.savefig(plot_dir)
+    plt.clf()
+
+
+def prepare_smiles_data(features_name, mode, features_nums=None, save_plot_mode=False):
     if not os.path.exists(FACES_FEATURES_DATA_DIR):
         os.makedirs(FACES_FEATURES_DATA_DIR)
 
     data_files_names = get_all_filenames(FACES_FEATURES_DATA_WIDTH_DIR)
     data_files_prepared = 0
+    plots_saved = 0
 
     with open(COMPLETE_SMILES_DATA_FILE_PATH, 'r') as fp:
         smiles_data = json.load(fp)['frames']
@@ -54,6 +85,8 @@ def prepare_smiles_data(features_name, mode, features_nums=None):
                                                           f'{features_name}_{mode}_x.csv'))
 
     for num, data_file_name in enumerate(data_files_names):
+        if save_plot_mode is True and num >= 100:
+            break
         print(data_file_name)
         data_x_filepath = os.path.abspath(os.path.join(os.sep, FACES_FEATURES_DATA_WIDTH_DIR, data_file_name))
         video_name = data_file_name.split('.csv')[0]
@@ -72,6 +105,8 @@ def prepare_smiles_data(features_name, mode, features_nums=None):
                     break
         elif mode == 'k_first':
             frames_nums = list(range(min_num_frames))
+        elif mode == 'all':
+            pass
         else:
             raise Exception('Incorrect "mode" given. Options to choose: "scaled" | "k_first_in_smile" | "k_first"\n')
 
@@ -129,17 +164,32 @@ def prepare_smiles_data(features_name, mode, features_nums=None):
         selected_data_x.drop(labels=['video_name'], axis=1, inplace=True)
         selected_data_x.insert(0, 'video_name', vn_col)
 
-        if num != 0:
-            selected_data_x.to_csv(output_data_x_filepath, mode='a', sep=';', index=False, header=False)
+        if save_plot_mode is False:
+            if num != 0:
+                selected_data_x.to_csv(output_data_x_filepath, mode='a', sep=';', index=False, header=False)
+            else:
+                selected_data_x.to_csv(output_data_x_filepath, sep=';', index=False, header=True)
+            data_files_prepared += 1
         else:
-            selected_data_x.to_csv(output_data_x_filepath, sep=';', index=False, header=True)
-        data_files_prepared += 1
+            data_to_plot = selected_data_x[features_name]
+            frames = list(range([video['num_frames'] for video in smiles_data if video['video_name'] == video_name][0]))
+            if SMILE_ORIGINAL_LABELS[0] in data_file_name:
+                smile_label = SMILE_ORIGINAL_LABELS[0]
+            elif SMILE_ORIGINAL_LABELS[1] in data_file_name:
+                smile_label = SMILE_ORIGINAL_LABELS[1]
+            else:
+                raise Exception('No correct smile label in the video data file name.')
+            plot_smiles_data(values=data_to_plot, frames=frames, features_name=features_name, smile_label=smile_label,
+                             plot_name=data_file_name)
+            plots_saved += 1
 
-    print(f'Done! Successfully scaled {data_files_prepared} data files into the new csv files.')
+    print(f'Done! Successfully scaled {data_files_prepared} data files into the new csv files and saved {plots_saved} '
+          f'plots.')
 
 
 if __name__ == '__main__':
     # Change if needed.
-    prepare_smiles_data(FFS_DATA_CONFIG['features_name'], mode=FFS_DATA_CONFIG['mode'],
-                        features_nums=FFS_DATA_CONFIG['features_nums'])
+    # prepare_smiles_data(FFS_DATA_CONFIG['features_name'], mode=FFS_DATA_CONFIG['mode'],
+    #                     features_nums=FFS_DATA_CONFIG['features_nums'])
     # prepare_smiles_data(FFS_DATA_CONFIG['features_name'], mode=FFS_DATA_CONFIG['mode'])
+    prepare_smiles_data(FFS_DATA_CONFIG['features_name'], mode=FFS_DATA_CONFIG['mode'], save_plot_mode=True)
