@@ -42,7 +42,7 @@ def get_faces(gray, algorithm):
     return faces
 
 
-def crop_faces(faces, face_name):
+def save_faces(faces, face_name):
     faces_extracted = 0
     for num, face in enumerate(faces):
         if num != 0:
@@ -61,7 +61,8 @@ if __name__ == '__main__':
 
     videos_names = get_all_subdirs(FRAMES_DIR)
     done_videos_names = get_all_subdirs(FACES_DIR)
-    todo_videos_names = [vn for vn in videos_names if vn not in done_videos_names]
+    # todo_videos_names = [vn for vn in videos_names if vn not in done_videos_names]
+    todo_videos_names = videos_names
 
     print('all videos: ', len(videos_names))
     print('done videos: ', len(done_videos_names))
@@ -100,7 +101,7 @@ if __name__ == '__main__':
                         # align and crop faces
                         aligned_faces = [fa.align(img, _gray, _face) for _face in _faces]
                         # save cropped faces
-                        fe = crop_faces(aligned_faces, frame_name)
+                        fe = save_faces(aligned_faces, frame_name)
 
                         video_faces_extracted += fe
                         _faces_extracted += fe

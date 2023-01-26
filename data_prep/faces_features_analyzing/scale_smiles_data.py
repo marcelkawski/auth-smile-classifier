@@ -6,16 +6,11 @@ import pandas as pd
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from config import FACES_FEATURES_DATA_DIR, FACES_FEATURES_DATA_WIDTH_DIR, COMPLETE_SMILES_DATA_FILE_PATH, \
-    VIDEOS_DATA_FILEPATH
+    VIDEOS_DATA_FILEPATH, FFS_DATA_CONFIG, LIPS_CORNER1_IDX, LIPS_CORNER2_IDX, EYEBROWS_CORNERS_IDXS
 from data_prep.data_prep_utils import get_all_filenames
 
 
 def scale_smiles_data(scaled_data_filename, features_nums=None):
-    if os.path.exists(FACES_FEATURES_DATA_DIR) and os.listdir(FACES_FEATURES_DATA_DIR):
-        # Exists and is not empty.:
-        raise Exception('Scaled faces features data directory is not empty so the program supposes that the faces '
-                        'have been already extracted.\n')
-
     if not os.path.exists(FACES_FEATURES_DATA_DIR):
         os.makedirs(FACES_FEATURES_DATA_DIR)
 
@@ -64,7 +59,8 @@ def scale_smiles_data(scaled_data_filename, features_nums=None):
 
 if __name__ == '__main__':
     # Change if needed.
-    sc_data_filename = 'lips_corners'
-    f_nums = [48, 54]
+    sc_data_filename = FFS_DATA_CONFIG['features_name']
+    # f_nums = [LIPS_CORNER1_IDX, LIPS_CORNER2_IDX]
+    f_nums = EYEBROWS_CORNERS_IDXS
 
     scale_smiles_data(sc_data_filename, features_nums=f_nums)

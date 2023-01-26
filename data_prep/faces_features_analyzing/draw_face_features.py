@@ -5,7 +5,8 @@ import dlib
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from config import FACES_FEATURES_DET_FP, FACES_DIR, NUM_FACES_FEATURES, FACES_FEATURES_DRAWINGS_DIR
+from config import FACES_FEATURES_DET_FP, FACES_DIR, NUM_FACES_FEATURES, FACES_FEATURES_DRAWINGS_DIR, \
+    EYEBROWS_CORNERS_IDXS, create_face_features_nums
 from data_prep.data_prep_utils import get_frame_num, get_filenames_sorted_by_frame_num
 
 f1 = lambda num: f'{num}x'
@@ -20,6 +21,12 @@ def draw_features(mode):
         features_nums_to_circle = [48, 54, 33]
     elif mode == 'corners_dist':
         features_nums_to_circle = [48, 54]
+    elif mode == 'lips_corners':
+        features_nums_to_circle = [48, 54]
+    elif mode == 'face':
+        features_nums_to_circle = create_face_features_nums()
+    elif mode == 'eyebrows_corners':
+        features_nums_to_circle = EYEBROWS_CORNERS_IDXS
     else:
         raise Exception('Incorrect drawing faces features mode given.')
 
@@ -57,7 +64,11 @@ def draw_features(mode):
                         _y = _landmarks.part(feature_num).y
                         xs.append(_x)
                         ys.append(_y)
-                        cv2.circle(img=img, center=(_x, _y), radius=5, color=(0, 255, 0), thickness=-1)
+                        if mode != 'face':
+                            cv2.circle(img=img, center=(_x, _y), radius=5, color=(0, 255, 0), thickness=-1)
+                        else:
+                            cv2.circle(img=img, center=(_x, _y), radius=3, color=(0, 255, 0), thickness=-1)
+
 
                     if mode == 'nose_top':
                         cv2.line(img=img, pt1=(xs[0], ys[0]), pt2=(xs[2], ys[2]), color=(0, 0, 255), thickness=2)
@@ -76,5 +87,8 @@ def draw_features(mode):
 
 
 if __name__ == '__main__':
-    draw_features(mode='nose_top')
+    # draw_features(mode='nose_top')
     # draw_features(mode='corners_dist')
+    # draw_features(mode='lips_corners')
+    # draw_features(mode='face')
+    draw_features(mode='eyebrows_corners')

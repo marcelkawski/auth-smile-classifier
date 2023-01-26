@@ -112,6 +112,8 @@ def save_smiles_data(show_plot=False, print_values=False, print_video_summary=Fa
 
                     diff = diffs_in_time[i+1]['diff']
 
+                    print(diff)
+
                     rise_diffs = []
                     if beg_found is False:
                         for x in range(1, NUM_FRAMES_RISE_SMILE_BEG+1):
@@ -198,7 +200,7 @@ def save_smiles_data(show_plot=False, print_values=False, print_video_summary=Fa
             'frames': smiles_frames
         }
 
-        save_dict_to_json_file(SMILES_DATA_DIR, 'smiles_data', smiles_data)
+        # save_dict_to_json_file(SMILES_DATA_DIR, 'smiles_data', smiles_data)
 
     else:
         print('No faces to detect face features...')

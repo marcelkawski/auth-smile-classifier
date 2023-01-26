@@ -39,6 +39,7 @@ NUM_FACES_FEATURES = 68
 LIPS_CORNER1_IDX = 48
 LIPS_CORNER2_IDX = 54
 NOSE_TOP_IDX = 33
+EYEBROWS_CORNERS_IDXS = [17, 21, 22, 26]
 
 
 def create_face_features_nums():
@@ -55,16 +56,18 @@ FFS_DATA_ALT_MODES = ['lips_corners_from_nose_dist', 'lips_corners_from_nose_ang
 FFS_DATA_CONFIG = {
     # 'features_name': 'lips_corners_dist',
     # 'features_name': 'lips_corners_from_nose_angle',
-    'features_name': 'lips_corners_from_nose_dist',
+    # 'features_name': 'lips_corners_from_nose_dist',
     # 'features_name': 'lips_corners',
     # 'features_name': 'face',
+    'features_name': 'eyebrows_corners',
     # 'features_name': 'all',
     # 'mode': 'scaled',  # 'scaled' / 'k_first_in_smile' / 'k_first'
-    # 'mode': 'k_first_in_smile',
+    'mode': 'k_first_in_smile',
     # 'mode': 'k_first',
-    'mode': 'all',
+    # 'mode': 'all',
     # 'features_nums': [LIPS_CORNER1_IDX, LIPS_CORNER2_IDX]
     # 'features_nums': list(range(NUM_FACES_FEATURES))
+    'features_nums': EYEBROWS_CORNERS_IDXS
     # 'features_nums': create_face_features_nums()
 }
 FACES_FEATURES_WIDTH_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data',

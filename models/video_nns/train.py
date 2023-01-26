@@ -289,7 +289,7 @@ def train(date_str):
               f'best epoch: {best_epoch}')
 
         training_proc_data.append({
-            'execution_time': exec_time,
+            'execution_time': str_exec_time,
             'best_val_loss': best_loss,
             'best_epoch': best_epoch,
             'test_accuracy': test_accuracy

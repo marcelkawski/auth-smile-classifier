@@ -35,12 +35,30 @@ class FaceAligner:
         left_eye_points = shape[left_eye_beg:left_eye_end]
         right_eye_points = shape[right_eye_beg:right_eye_end]
 
+        # cv2.imwrite('proba.jpg', image)
+        # sys.exit(0)
+
+        for lep in left_eye_points:
+            cv2.circle(img=image, center=(lep[0], lep[1]), radius=5, color=(0, 255, 0), thickness=-1)
+        for rep in right_eye_points:
+            cv2.circle(img=image, center=(rep[0], rep[1]), radius=5, color=(0, 255, 0), thickness=-1)
+
         # calculate an angle between a line connecting centres of eyes
         left_eye_center = left_eye_points.mean(axis=0).astype('int')
         right_eye_center = right_eye_points.mean(axis=0).astype('int')
+
+        cv2.circle(img=image, center=(left_eye_center[0], left_eye_center[1]), radius=5, color=(0, 0, 255),
+                   thickness=-1)
+        cv2.circle(img=image, center=(right_eye_center[0], right_eye_center[1]), radius=5, color=(0, 0, 255),
+                   thickness=-1)
+        cv2.line(img=image, pt1=(left_eye_center[0], left_eye_center[1]), pt2=(right_eye_center[0],
+                                                                               right_eye_center[1]), color=(255, 0, 0),
+                 thickness=2)
+
         dY = right_eye_center[1] - left_eye_center[1]
         dX = right_eye_center[0] - left_eye_center[0]
         angle = np.degrees(np.arctan2(dY, dX)) - 180
+        print(angle)
 
         dist = np.sqrt((dX ** 2) + (dY ** 2))
         desired_right_eye_x = 1.0 - self.desired_left_eye_pos[0]
@@ -50,6 +68,9 @@ class FaceAligner:
 
         eyes_center = (int((left_eye_center[0] + right_eye_center[0]) // 2),
                        int((left_eye_center[1] + right_eye_center[1]) // 2))
+
+        cv2.circle(img=image, center=(eyes_center[0], eyes_center[1]), radius=7, color=(11, 214, 224), thickness=-1)
+
         matrix = cv2.getRotationMatrix2D(eyes_center, angle, scale)
         tX = self.desired_face_photo_width * 0.5
         tY = self.desired_face_photo_height * self.desired_left_eye_pos[1]

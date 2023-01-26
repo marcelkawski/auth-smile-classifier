@@ -47,7 +47,7 @@ def create_complete_smiles_data_file():
     if len(num_imgs_saved_vals) == 1 and num_imgs_saved_vals[0] == CURRENT_MIN_NUM_SMILE_FRAMES:
         print(f'Success: All saved smiles frames have the same length ({num_imgs_saved_vals[0]}).')
     else:
-        print(f'Error: Error during saving smiles frames. The do NOT have the same length. They should be '
+        print(f'Error: Error during saving smiles frames. They do NOT have the same length. They should be '
               f'{CURRENT_MIN_NUM_SMILE_FRAMES} frames long.')
 
 
