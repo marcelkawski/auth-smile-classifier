@@ -62,8 +62,8 @@ FFS_DATA_CONFIG = {
     'features_name': 'eyebrows_corners',
     # 'features_name': 'all',
     # 'mode': 'scaled',  # 'scaled' / 'k_first_in_smile' / 'k_first'
-    'mode': 'k_first_in_smile',
-    # 'mode': 'k_first',
+    # 'mode': 'k_first_in_smile',
+    'mode': 'k_first',
     # 'mode': 'all',
     # 'features_nums': [LIPS_CORNER1_IDX, LIPS_CORNER2_IDX]
     # 'features_nums': list(range(NUM_FACES_FEATURES))
