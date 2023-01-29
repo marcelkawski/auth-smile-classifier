@@ -46,14 +46,14 @@ CNN3D_config = DotMap({
     'num_epochs': 20,
 })
 
-# LSTM_config = DotMap({
-#     'num_epochs': 300,
-#     'batch_size': 64,
-#     'num_hidden': 256,
-#     'num_lstm_layers': 3,
-#     'dropout': 0.75,
-#     'learning_rate': 0.0001
-# })
+LSTM_config = DotMap({
+    'num_epochs': 300,
+    'batch_size': 64,
+    'num_hidden': 256,
+    'num_lstm_layers': 3,
+    'dropout': 0.75,
+    'learning_rate': 0.0001
+})
 
 # LSTM_config = DotMap({
 #     'num_epochs': 600,
@@ -64,11 +64,11 @@ CNN3D_config = DotMap({
 #     'learning_rate': 0.00001
 # })
 
-LSTM_config = DotMap({
-    'num_epochs': 800,
-    'batch_size': 128,
-    'num_hidden': 768,
-    'num_lstm_layers': 4,
-    'dropout': 0.75,
-    'learning_rate': 0.00001
-})
+# LSTM_config = DotMap({
+#     'num_epochs': 800,
+#     'batch_size': 128,
+#     'num_hidden': 768,
+#     'num_lstm_layers': 4,
+#     'dropout': 0.75,
+#     'learning_rate': 0.00001
+# })
