@@ -17,7 +17,7 @@ ML models classifying smiles as spontaneous or deliberate\
 
 ## General information
 
-The project made as my Master's thesis titled **_"Determining the authenticity of a smile using machine learning models"_**.
+The project made as my Master's thesis titled **_"Smile authenticity recognition using machine learning models"_**.
 
 <!-- ## Technologies used
 
