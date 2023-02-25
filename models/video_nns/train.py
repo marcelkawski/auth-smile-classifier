@@ -91,10 +91,6 @@ def get_model_params(model_num, train_data, val_data, test_data, device):
         collate_fn = collate_fn_cnn_lstm
 
         model = VideoCNNLSTM().to(device)
-        loss_func = nn.CrossEntropyLoss(reduction='sum')
-        # optimizer = torch.optim.Adam(model.parameters(), lr=cnn_lstm_conf.learning_rate)
-        optimizer = torch.optim.SGD(model.parameters(), lr=config_dict.learning_rate)
-        lr_scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5, verbose=True)
 
     elif model_num == 1:
         model_name = '3D_CNN_NN'
@@ -106,14 +102,19 @@ def get_model_params(model_num, train_data, val_data, test_data, device):
         num_features = model.fc.in_features
         model.fc = nn.Linear(num_features, nns_conf.num_classes)
 
-        loss_func = nn.CrossEntropyLoss(reduction='sum')
-        # optimizer = torch.optim.Adam(model.parameters(), lr=cnn_3d_conf.learning_rate)
-        optimizer = torch.optim.SGD(model.parameters(), lr=config_dict.learning_rate)
-        lr_scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5, verbose=True)
-
         if torch.cuda.is_available():
             model.cuda()
 
+    loss_func = nn.CrossEntropyLoss(reduction='sum')
+    if config_dict.optimizer == 'SGD':
+        optimizer = torch.optim.SGD(model.parameters(), lr=config_dict.learning_rate)
+    elif config_dict.optimizer == 'Adam':
+        optimizer = torch.optim.Adam(model.parameters(), lr=cnn_lstm_conf.learning_rate)
+    else:
+        raise Exception('Incorrect optimizer given in the model configuration file. Options to choose:\n'
+                        '- "SGD" (stochastic gradient descent)\n'
+                        '- "Adam"\n')
+    lr_scheduler = ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=5, verbose=True)
     num_epochs = config_dict.num_epochs
 
     if collate_fn is not None:
@@ -224,6 +225,7 @@ def train(date_str):
     print(f'Model will be trained on: {device}\n')
 
     train_data, val_data, test_data = prepare_datasets(num_model)
+
     model_name, model, loss_func, optimizer, lr_scheduler, train_loader, val_loader, test_loader, num_epochs, \
         training_proc_data = get_model_params(num_model, train_data, val_data, test_data, device)
     model_values_to_check = [model, loss_func, optimizer, train_loader, val_loader, test_loader]
@@ -277,7 +279,7 @@ def train(date_str):
 
         # testing
         test_accuracy = test_loop(model, best_model_dict, test_loader, device)
-        print(f'tests accuracy of the model ({model_name}): {test_accuracy} %')
+        print(f'test accuracy of the model ({model_name}): {test_accuracy} %')
 
         save_best_model(model_name, best_model_dict, date_str)
 

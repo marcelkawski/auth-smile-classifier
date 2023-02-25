@@ -87,7 +87,6 @@ def prepare_smiles_data(features_name, mode, features_nums=None, save_plot_mode=
     for num, data_file_name in enumerate(data_files_names):
         if save_plot_mode is True and num >= 100:
             break
-        print(data_file_name)
         data_x_filepath = os.path.abspath(os.path.join(os.sep, FACES_FEATURES_DATA_WIDTH_DIR, data_file_name))
         video_name = data_file_name.split('.csv')[0]
 

@@ -30,7 +30,6 @@ def scale_smiles_data(scaled_data_filename, features_nums=None):
                                                                f'{scaled_data_filename}_titles.csv'))
 
     for data_file_name in data_files_names:
-        print(data_file_name)
         data_x_filepath = os.path.abspath(os.path.join(os.sep, FACES_FEATURES_DATA_WIDTH_DIR, data_file_name))
         video_name = data_file_name.split('.csv')[0]
 

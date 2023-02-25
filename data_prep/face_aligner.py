@@ -35,9 +35,6 @@ class FaceAligner:
         left_eye_points = shape[left_eye_beg:left_eye_end]
         right_eye_points = shape[right_eye_beg:right_eye_end]
 
-        # cv2.imwrite('proba.jpg', image)
-        # sys.exit(0)
-
         for lep in left_eye_points:
             cv2.circle(img=image, center=(lep[0], lep[1]), radius=5, color=(0, 255, 0), thickness=-1)
         for rep in right_eye_points:
@@ -58,7 +55,6 @@ class FaceAligner:
         dY = right_eye_center[1] - left_eye_center[1]
         dX = right_eye_center[0] - left_eye_center[0]
         angle = np.degrees(np.arctan2(dY, dX)) - 180
-        print(angle)
 
         dist = np.sqrt((dX ** 2) + (dY ** 2))
         desired_right_eye_x = 1.0 - self.desired_left_eye_pos[0]

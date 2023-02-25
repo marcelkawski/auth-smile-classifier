@@ -3,7 +3,6 @@ import sys
 import pandas as pd
 from torchvision import transforms
 from sklearn.model_selection import train_test_split
-from torch.utils.data import random_split
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 

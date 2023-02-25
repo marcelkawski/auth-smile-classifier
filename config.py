@@ -58,8 +58,8 @@ FFS_DATA_CONFIG = {
     # 'features_name': 'lips_corners_from_nose_angle',
     # 'features_name': 'lips_corners_from_nose_dist',
     # 'features_name': 'lips_corners',
-    # 'features_name': 'face',
-    'features_name': 'eyebrows_corners',
+    'features_name': 'face',
+    # 'features_name': 'eyebrows_corners',
     # 'features_name': 'all',
     # 'mode': 'scaled',  # 'scaled' / 'k_first_in_smile' / 'k_first'
     # 'mode': 'k_first_in_smile',
@@ -67,8 +67,8 @@ FFS_DATA_CONFIG = {
     # 'mode': 'all',
     # 'features_nums': [LIPS_CORNER1_IDX, LIPS_CORNER2_IDX]
     # 'features_nums': list(range(NUM_FACES_FEATURES))
-    'features_nums': EYEBROWS_CORNERS_IDXS
-    # 'features_nums': create_face_features_nums()
+    # 'features_nums': EYEBROWS_CORNERS_IDXS
+    'features_nums': create_face_features_nums()
 }
 FACES_FEATURES_WIDTH_DIR = os.path.abspath(os.path.join(os.sep, ROOT_DIR, 'data',
                                                         f'faces_features{DESIRED_FACE_PHOTO_WIDTH}'))

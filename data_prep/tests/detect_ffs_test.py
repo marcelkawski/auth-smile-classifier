@@ -15,7 +15,6 @@ def test_consecutive_frames_in_ffs_data_files():
         path = os.path.abspath(os.path.join(os.sep, FACES_FEATURES_DATA_WIDTH_DIR, dfn))
         data = pd.read_csv(path, sep=';', usecols=cols_list)
         frame_numbers = list(data['frame_number'])
-        print(dfn)
         for idx, frame_number in enumerate(frame_numbers):
             assert frame_number == idx
 
@@ -39,5 +38,4 @@ def test_created_data_num():
         created_data_rows = len(data)
         faces_num = len(get_all_filenames(faces_path))
 
-        print(dirname, created_imgs_num, created_data_rows, faces_num)
         assert created_imgs_num == created_data_rows == faces_num

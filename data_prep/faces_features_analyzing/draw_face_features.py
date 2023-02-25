@@ -5,7 +5,7 @@ import dlib
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from config import FACES_FEATURES_DET_FP, FACES_DIR, NUM_FACES_FEATURES, FACES_FEATURES_DRAWINGS_DIR, \
+from config import FACES_FEATURES_DET_FP, FACES_DIR, FRAMES_DIR, NUM_FACES_FEATURES, FACES_FEATURES_DRAWINGS_DIR, \
     EYEBROWS_CORNERS_IDXS, create_face_features_nums
 from data_prep.data_prep_utils import get_frame_num, get_filenames_sorted_by_frame_num
 
@@ -27,6 +27,8 @@ def draw_features(mode):
         features_nums_to_circle = create_face_features_nums()
     elif mode == 'eyebrows_corners':
         features_nums_to_circle = EYEBROWS_CORNERS_IDXS
+    elif mode == 'all':
+        features_nums_to_circle = list(range(NUM_FACES_FEATURES))
     else:
         raise Exception('Incorrect drawing faces features mode given.')
 
@@ -36,7 +38,8 @@ def draw_features(mode):
 
     for video_name in videos_names:
         faces_features_dir = os.path.abspath(os.path.join(os.sep, FACES_FEATURES_DRAWINGS_DIR, video_name))
-        faces_dir = os.path.abspath(os.path.join(os.sep, FACES_DIR, video_name))
+        # faces_dir = os.path.abspath(os.path.join(os.sep, FACES_DIR, video_name))
+        faces_dir = os.path.abspath(os.path.join(os.sep, FRAMES_DIR, video_name))  # for faces before normalization
         faces_names = get_filenames_sorted_by_frame_num(faces_dir)
         video_imgs_created = 0
 
@@ -64,6 +67,8 @@ def draw_features(mode):
                         _y = _landmarks.part(feature_num).y
                         xs.append(_x)
                         ys.append(_y)
+                        if mode == 'all':
+                            cv2.circle(img=img, center=(_x, _y), radius=8, color=(0, 255, 0), thickness=-1)
                         if mode != 'face':
                             cv2.circle(img=img, center=(_x, _y), radius=5, color=(0, 255, 0), thickness=-1)
                         else:
@@ -87,8 +92,4 @@ def draw_features(mode):
 
 
 if __name__ == '__main__':
-    # draw_features(mode='nose_top')
-    # draw_features(mode='corners_dist')
-    # draw_features(mode='lips_corners')
-    # draw_features(mode='face')
-    draw_features(mode='eyebrows_corners')
+    draw_features(mode='all')

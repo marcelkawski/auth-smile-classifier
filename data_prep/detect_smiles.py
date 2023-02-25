@@ -51,7 +51,6 @@ def save_smiles_data(show_plot=False, print_values=False, print_video_summary=Fa
             faces_names = get_filenames_sorted_by_frame_num(faces_dir)
 
             first_dist = None
-            curr_diff = None
             diffs_in_time = []
 
             print(f'**********************************************\n{video_name}\n')
@@ -112,27 +111,11 @@ def save_smiles_data(show_plot=False, print_values=False, print_video_summary=Fa
 
                     diff = diffs_in_time[i+1]['diff']
 
-                    print(diff)
-
                     rise_diffs = []
                     if beg_found is False:
                         for x in range(1, NUM_FRAMES_RISE_SMILE_BEG+1):
                             # IndexError can happen here:
                             rise_diffs.append(diffs_in_time[i+x]['diff'])
-
-                        # print('\nframe: ', i)
-                        # print('diff: ', diff)
-                        # print('current diff ', diffs_in_time[i]['diff'])
-                        # print('rise_diffs: ', rise_diffs)
-                        # print(all(rise_diff > (diffs_in_time[i]['diff'] + MIN_DIFF_IN_RISE_SMILE_BEG) for rise_diff in
-                        #       rise_diffs))
-                        # print(dY > BEG_SMILE_THRESHOLD)
-                        # print(dY)
-                        # print(BEG_SMILE_THRESHOLD)
-
-                    # print('\nframe: ', i)
-                    # print('diff: ', diff)
-                    # print('dY: ', dY)
 
                     if beg_found is False and dY > BEG_SMILE_THRESHOLD and \
                             all(rise_diff > (diffs_in_time[i]['diff'] + MIN_DIFF_IN_RISE_SMILE_BEG)
@@ -200,7 +183,7 @@ def save_smiles_data(show_plot=False, print_values=False, print_video_summary=Fa
             'frames': smiles_frames
         }
 
-        # save_dict_to_json_file(SMILES_DATA_DIR, 'smiles_data', smiles_data)
+        save_dict_to_json_file(SMILES_DATA_DIR, 'smiles_data', smiles_data)
 
     else:
         print('No faces to detect face features...')

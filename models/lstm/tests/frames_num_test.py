@@ -4,7 +4,7 @@ import pandas as pd
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from config import CURRENT_FACES_FEATURES_DATA_X, CURRENT_FACES_FEATURES_DATA_Y, CURRENT_MIN_NUM_SMILE_FRAMES
+from config import CURRENT_FACES_FEATURES_DATA_X, CURRENT_MIN_NUM_SMILE_FRAMES
 
 
 def test_frames_num_after_scaling():

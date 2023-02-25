@@ -6,17 +6,11 @@ import pandas as pd
 import torchvision.transforms as T
 from torchvision.utils import save_image
 from PIL import Image
-from torchvision.io import read_image
-from sklearn.model_selection import train_test_split
-from torch.utils.data import random_split
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from config import VIDEOS_DATA_FILEPATH, CURRENT_MIN_NUM_SMILE_FRAMES
 from models.models_config import CNNLSTM_imgs_transforms_config as cnn_lstm_itc
 from models.models_config import CNN3D_imgs_transforms_config as cnn_3d_itc
-from models.models_config import nns_config as nns_conf
-from models.video_nns.videos_dataset import VideosDataset
 
 
 def perform_transform(num_model, transf):
@@ -45,4 +39,3 @@ def perform_transform(num_model, transf):
 
 if __name__ == '__main__':
     perform_transform(1, 'resize')
-    # perform_transform(0, 'normalize')

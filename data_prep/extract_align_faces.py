@@ -21,9 +21,9 @@ def handle_arguments():
     if arguments[1] not in [0, 1, 2]:
         raise Exception('Invalid extracting faces algorithm number.\n'
                         'Options to choose:\n'
-                        '0: OpenCV haar-cascade haarcascade_frontalface_alt.xml\n'
-                        '1: OpenCV haar-cascade haarcascade_frontalface_alt2.xml\n'
-                        '2: dlib.get_frontal_face_detector\n')
+                        '0: OpenCV: CascadeClassifier - haarcascade_frontalface_alt.xml (Viola-Jones algorithm)\n'
+                        '1: OpenCV: CascadeClassifier - haarcascade_frontalface_alt2.xml (Viola-Jones algorithm)\n'
+                        '2: Dlib: get_frontal_face_detector() (HOG + linear SVM algorithm)\n')
 
     return arguments
 

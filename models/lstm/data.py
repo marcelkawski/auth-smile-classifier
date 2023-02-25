@@ -1,7 +1,6 @@
 import os
 import sys
 import pandas as pd
-import pytorch_lightning as pl
 from sklearn.model_selection import train_test_split
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
@@ -11,7 +10,6 @@ from models.models_config import nns_config as nns_conf
 from models.models_config import LSTM_config as lstm_conf
 from models.lstm.dataset import FacesFeaturesDataModule
 
-# pl.seed_everything(42)
 
 
 def prepare_data():

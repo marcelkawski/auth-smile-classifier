@@ -19,7 +19,6 @@ class FacesFeaturesDataset(Dataset):
         return self.face_features_locs.shape[0] // self.seq_len
 
     def __getitem__(self, index):
-        # print(self.titles[index])
         frames = torch.tensor(self.face_features_locs[index * self.seq_len: (index+1) * self.seq_len])
         authenticity = torch.tensor(self.authenticity[index])
         return frames, authenticity
