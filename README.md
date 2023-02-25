@@ -1,7 +1,7 @@
 # Authentic Smile Classifier
 
 ML models classifying smiles as spontaneous or deliberate\
-**The project is still in progress so beautiful README will be added soon ;)**
+**Beautiful README will be added soon ;)**
 
 [//]: # (Live demo [_here_]&#40;https://www.example.com&#41;.)
 
@@ -39,7 +39,7 @@ List the ready features here:
 
 ## Project status
 
-Project is _in progress_.
+Project is _complete_.
 
 [//]: # (## Acknowledgements)
 
